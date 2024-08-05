@@ -12,3 +12,13 @@ datasource db {
     provider = "mysql"
     url      = env("MEIGETSUID_DATABASE_URL")
 }
+
+model masteruserrecord {
+    ID String @db.VarChar(13) @unique @id
+    UserID String @db.VarChar(20) @unique
+    UserName String @db.Text
+    MailAddress String @db.VarChar(36) @unique
+    Password String @db.VarChar(128)
+    AccountType Int @db.UnsignedTinyInt
+    CreatedAt DateTime @default(now())
+}
