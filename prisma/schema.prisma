@@ -34,3 +34,17 @@ model virtualid {
     ID String @db.VarChar(13)
     AppID String @db.VarChar(32)
 }
+
+model accesstoken {
+    Token String @db.VarChar(128) @unique @id
+    VirtualID String @db.VarChar(32)
+    Scopes String @db.Text
+    ExpiredAt DateTime @db.DateTime()
+}
+
+model refreshtoken {
+    Token String @db.VarChar(128) @unique @id
+    VirtualID String @db.VarChar(32)
+    Scopes String @db.Text
+    ExpiredAt DateTime @db.DateTime()
+}
