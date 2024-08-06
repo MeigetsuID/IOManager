@@ -28,3 +28,9 @@ model application {
     AppName String @db.Text
     DeveloperID String @db.VarChar(13)
 }
+
+model virtualid {
+    VirtualID String @db.VarChar(32) @unique @id
+    ID String @db.VarChar(13)
+    AppID String @db.VarChar(32)
+}
