@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-export class DatabaseConnector {
+export default class DatabaseConnector {
     private static instance: PrismaClient;
     private static connection: number = 0;
     /**
