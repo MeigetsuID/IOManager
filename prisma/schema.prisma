@@ -22,3 +22,9 @@ model masteruserrecord {
     AccountType Int @db.UnsignedTinyInt
     CreatedAt DateTime @default(now())
 }
+
+model application {
+    AppID String @db.VarChar(32) @unique @id
+    AppName String @db.Text
+    DeveloperID String @db.VarChar(13)
+}
