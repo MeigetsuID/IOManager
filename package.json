@@ -26,6 +26,10 @@
   },
   "homepage": "https://idportal.meigetsu.jp/",
   "description": "Meigetsu ID API Server IO Manager",
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@prisma/client": "^5.17.0"
   },
