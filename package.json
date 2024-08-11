@@ -31,6 +31,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
+    "@meigetsusoft/hash": "^1.0.0",
     "@prisma/client": "^5.17.0"
   },
   "devDependencies": {
