@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import Aes from './Aes';
 
 export default class MailAddressEncryption {
@@ -24,7 +24,6 @@ export default class MailAddressEncryption {
         for (let i = 0; i < 16; i++) {
             for (let j = 0; j < 16; j++) table.push(useText[i] + useText[j]);
         }
-        if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
         writeFileSync('./system/account/emailenc.csv', table.join(','));
         return table;
     }
