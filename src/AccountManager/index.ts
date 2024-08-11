@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs';
-import DatabaseConnector from './DatabaseConnector';
+import DatabaseConnector from '../DatabaseConnector';
 import MailAddressEncryption from './MailAddressEncryption';
 import Aes from './Aes';
 import { ToHash } from '@meigetsusoft/hash';
