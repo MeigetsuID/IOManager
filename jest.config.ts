@@ -10,8 +10,11 @@ const config: Config = {
     collectCoverage: true,
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
-    preset: 'ts-jest',
-    testMatch: ['src/**/*.test.js', 'src/**/*.test.ts'],
+    transform: {
+        '^.+\\.tsx?$': 'ts-jest',
+    },
+    testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
 
 export default config;
