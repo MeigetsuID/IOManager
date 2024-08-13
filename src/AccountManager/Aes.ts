@@ -2,7 +2,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 export default class Aes {
-    private static readonly algorithm = 'aes-256-gcm';
+    private static readonly algorithm = 'aes-256-cbc';
     private static readInitConfig() {
         const initInfo = JSON.parse(readFileSync('./system/account/aes.dat', 'utf-8'));
         return {
@@ -12,7 +12,7 @@ export default class Aes {
     }
     private static createKey(keyPath: string) {
         const key = randomBytes(32);
-        const iv = randomBytes(12);
+        const iv = randomBytes(16);
         writeFileSync(keyPath, JSON.stringify({ key: key.toString('hex'), iv: iv.toString('hex') }));
         return {
             key: key,
