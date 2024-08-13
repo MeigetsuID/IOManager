@@ -11,7 +11,7 @@ const config: Config = {
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
     preset: 'ts-jest',
-    testMatch: [ 'src/**/*.test.js', 'src/**/*.test.ts' ],
+    testMatch: ['src/**/*.test.js', 'src/**/*.test.ts'],
 };
 
 export default config;

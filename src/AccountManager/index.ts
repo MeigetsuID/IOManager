@@ -10,15 +10,15 @@ export type CreateAccountArg = {
     name: string;
     mailaddress: string;
     password: string;
-    account_type: number
-}
+    account_type: number;
+};
 
 export type GetAccountRes = {
     user_id: string;
     name: string;
     mailaddress: string;
     account_type: number;
-}
+};
 
 export type UpdateAccountArg = Partial<{
     user_id: string;
@@ -32,7 +32,7 @@ export type CheckAvailableArg = Partial<{
     corp_number: string;
     user_id: string;
     mailaddress: string;
-}>
+}>;
 
 export class AccountManager extends DatabaseConnector {
     private MailEnc: MailAddressEncryption;
@@ -56,64 +56,68 @@ export class AccountManager extends DatabaseConnector {
                 UserName: arg.name,
                 MailAddress: this.MailEnc.encrypt(arg.mailaddress),
                 Password: ToHash(arg.password, 'foxtrot'),
-                AccountType: arg.account_type
-            }
+                AccountType: arg.account_type,
+            },
         });
     }
     /**
      * システムIDからアカウントを取得する
      * @param id システムID
-     * @returns 
+     * @returns
      */
     public async SGetAccount(id: string): Promise<GetAccountRes | null> {
-        return await this.mysql.findUnique({
-            select: {
-                ID: true,
-                UserID: true,
-                UserName: true,
-                MailAddress: true,
-                AccountType: true
-            },
-            where: {
-                ID: id
-            }
-        }).then(data => {
-            if (!data) return null;
-            return {
-                id: data.ID,
-                user_id: data.UserID,
-                name: data.UserName,
-                mailaddress: this.MailEnc.decrypt(data.MailAddress),
-                account_type: data.AccountType
-            };
-        });
+        return await this.mysql
+            .findUnique({
+                select: {
+                    ID: true,
+                    UserID: true,
+                    UserName: true,
+                    MailAddress: true,
+                    AccountType: true,
+                },
+                where: {
+                    ID: id,
+                },
+            })
+            .then(data => {
+                if (!data) return null;
+                return {
+                    id: data.ID,
+                    user_id: data.UserID,
+                    name: data.UserName,
+                    mailaddress: this.MailEnc.decrypt(data.MailAddress),
+                    account_type: data.AccountType,
+                };
+            });
     }
     /**
      * ユーザーIDからアカウントを取得する
      * @param id ユーザーID
-     * @returns 
+     * @returns
      */
     public async GetAccount(id: string): Promise<GetAccountRes | null> {
-        return await this.mysql.findUnique({
-            select: {
-                ID: true,
-                UserID: true,
-                UserName: true,
-                MailAddress: true,
-                AccountType: true
-            },
-            where: {
-                UserID: id
-            }
-        }).then(data => {
-            if (!data) return null;
-            return {
-                user_id: data.UserID,
-                name: data.UserName,
-                mailaddress: this.MailEnc.decrypt(data.MailAddress),
-                account_type: data.AccountType
-            };
-        });
+        return await this.mysql
+            .findUnique({
+                select: {
+                    ID: true,
+                    UserID: true,
+                    UserName: true,
+                    MailAddress: true,
+                    AccountType: true,
+                },
+                where: {
+                    UserID: id,
+                },
+            })
+            .then(data => {
+                if (!data) return null;
+                return {
+                    user_id: data.UserID,
+                    name: data.UserName,
+                    mailaddress: this.MailEnc.decrypt(data.MailAddress),
+                    account_type: data.AccountType,
+                };
+            });
     }
     /**
      * アカウント情報を更新する
@@ -127,11 +131,11 @@ export class AccountManager extends DatabaseConnector {
                 UserName: arg.name,
                 MailAddress: arg.mailaddress ? this.MailEnc.encrypt(arg.mailaddress) : undefined,
                 Password: arg.password ? ToHash(arg.password, 'foxtrot') : undefined,
-                AccountType: arg.account_type
+                AccountType: arg.account_type,
             },
             where: {
-                ID: id
-            }
+                ID: id,
+            },
         });
     }
     /**
@@ -141,8 +145,8 @@ export class AccountManager extends DatabaseConnector {
     public async DeleteAccount(id: string) {
         await this.mysql.delete({
             where: {
-                ID: id
-            }
+                ID: id,
+            },
         });
     }
     /**
@@ -151,48 +155,52 @@ export class AccountManager extends DatabaseConnector {
      * @param password パスワード
      */
     public async SignIn(id: string, password: string): Promise<string | null> {
-        return await this.mysql.findMany({
-            where: {
-                OR: [
-                    { ID: id },
-                    { UserID: id },
-                    { MailAddress: this.MailEnc.encrypt(id) }
-                ]
-            }
-        }).then(data => {
-            if (data.length !== 1 || data[0].Password !== ToHash(password, 'foxtrot')) return null;
-            return data[0].ID;
-        });
+        return await this.mysql
+            .findMany({
+                where: {
+                    OR: [{ ID: id }, { UserID: id }, { MailAddress: this.MailEnc.encrypt(id) }],
+                },
+            })
+            .then(data => {
+                if (data.length !== 1 || data[0].Password !== ToHash(password, 'foxtrot')) return null;
+                return data[0].ID;
+            });
     }
-    
+
     public async Available(arg: CheckAvailableArg): Promise<boolean> {
         let total = 0;
         if (arg.corp_number) {
-            await this.mysql.count({
-                where: {
-                    ID: arg.corp_number
-                }
-            }).then(cnt => {
-                total += cnt;
-            });
+            await this.mysql
+                .count({
+                    where: {
+                        ID: arg.corp_number,
+                    },
+                })
+                .then(cnt => {
+                    total += cnt;
+                });
         }
         if (arg.user_id) {
-            await this.mysql.count({
-                where: {
-                    UserID: arg.user_id
-                }
-            }).then(cnt => {
-                total += cnt;
-            });
+            await this.mysql
+                .count({
+                    where: {
+                        UserID: arg.user_id,
+                    },
+                })
+                .then(cnt => {
+                    total += cnt;
+                });
         }
         if (arg.mailaddress) {
-            await this.mysql.count({
-                where: {
-                    MailAddress: this.MailEnc.encrypt(arg.mailaddress)
-                }
-            }).then(cnt => {
-                total += cnt;
-            });
+            await this.mysql
+                .count({
+                    where: {
+                        MailAddress: this.MailEnc.encrypt(arg.mailaddress),
+                    },
+                })
+                .then(cnt => {
+                    total += cnt;
+                });
         }
         return total === 0;
     }

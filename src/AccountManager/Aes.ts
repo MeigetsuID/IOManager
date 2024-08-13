@@ -38,4 +38,4 @@ export default class Aes {
         const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedText, 'hex')), decipher.final()]);
         return decrypted.toString('utf-8');
     }
-};
+}
