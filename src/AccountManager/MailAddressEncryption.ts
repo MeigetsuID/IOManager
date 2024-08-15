@@ -38,14 +38,19 @@ export default class MailAddressEncryption {
         return Array.from(this.txtEncode.encode(text));
     }
     public encrypt(email: string) {
-        const positionRecord = {
-            len: email.length,
+        const toJson = (email: string) => {
+            const positionRecord = {
+                len: email.length,
+                positions: {}
+            };
+            [...email].forEach((char, index) => {
+                if (!positionRecord.positions[char]) positionRecord.positions[char] = [];
+                positionRecord.positions[char].push(index);
+            });
+            return positionRecord;
         };
-        [...email].forEach((char, index) => {
-            if (!positionRecord[char]) positionRecord[char] = [];
-            positionRecord[char].push(index);
-        });
-        const jsonText = JSON.stringify(positionRecord);
+        const convertedEmail = toJson(email);
+        const jsonText = JSON.stringify(convertedEmail);
         return this.AESMgr.encrypt(
             this.toByte(jsonText)
                 .map((byteVal: number) => this.encTextTable[byteVal])
@@ -59,9 +64,9 @@ export default class MailAddressEncryption {
         if (byteNumArr.includes(-1)) throw new Error('Invalid encrypted email');
         const byteArr = new Uint8Array(byteNumArr);
         const json = JSON.parse(this.txtDecode.decode(byteArr));
-        const MailAddressTextArr = new Array(json.len);
-        Object.keys(json).forEach(char => {
-            json[char].forEach(index => {
+        const MailAddressTextArr = new Array<string>(json.len);
+        Object.keys(json.positions).forEach(char => {
+            json.positions[char].forEach((index: number) => {
                 MailAddressTextArr[index] = char;
             });
         });
