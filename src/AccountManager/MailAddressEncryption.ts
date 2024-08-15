@@ -27,7 +27,10 @@ export default class MailAddressEncryption {
         writeFileSync(textTableFilePath, table.join(','));
         return table;
     }
-    constructor(private AESMgr: Aes, textTableFilePath: string = './system/account/emailenc.csv') {
+    constructor(
+        private AESMgr: Aes,
+        textTableFilePath: string = './system/account/emailenc.csv'
+    ) {
         this.encTextTable = existsSync(textTableFilePath)
             ? readFileSync(textTableFilePath, 'utf-8').split(',')
             : MailAddressEncryption.createTextTable(textTableFilePath);
@@ -39,11 +42,13 @@ export default class MailAddressEncryption {
     }
     public encrypt(email: string) {
         const toJson = (email: string) => {
+            const mailSplitData = email.split('@');
             const positionRecord = {
-                len: email.length,
-                positions: {}
+                len: mailSplitData[0].length,
+                domain: mailSplitData[1],
+                positions: {},
             };
-            [...email].forEach((char, index) => {
+            [...mailSplitData[0]].forEach((char, index) => {
                 if (!positionRecord.positions[char]) positionRecord.positions[char] = [];
                 positionRecord.positions[char].push(index);
             });
@@ -70,6 +75,6 @@ export default class MailAddressEncryption {
                 MailAddressTextArr[index] = char;
             });
         });
-        return MailAddressTextArr.join('');
+        return MailAddressTextArr.join('') + `@${json.domain}`;
     }
 }
