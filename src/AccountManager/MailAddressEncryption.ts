@@ -5,7 +5,7 @@ export default class MailAddressEncryption {
     private encTextTable: string[];
     private txtEncode: TextEncoder;
     private txtDecode: TextDecoder;
-    private static createTextTable(): string[] {
+    private static createTextTable(textTableFilePath: string): string[] {
         const textTable = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'];
         const shuffleArray = (array: string[]) => {
             const cloneArray = [...array];
@@ -24,13 +24,13 @@ export default class MailAddressEncryption {
         for (let i = 0; i < 16; i++) {
             for (let j = 0; j < 16; j++) table.push(useText[i] + useText[j]);
         }
-        writeFileSync('./system/account/emailenc.csv', table.join(','));
+        writeFileSync(textTableFilePath, table.join(','));
         return table;
     }
-    constructor(private AESMgr: Aes) {
-        this.encTextTable = existsSync('./system/account/emailenc.csv')
-            ? readFileSync('./system/account/emailenc.csv', 'utf-8').split(',')
-            : MailAddressEncryption.createTextTable();
+    constructor(private AESMgr: Aes, textTableFilePath: string = './system/account/emailenc.csv') {
+        this.encTextTable = existsSync(textTableFilePath)
+            ? readFileSync(textTableFilePath, 'utf-8').split(',')
+            : MailAddressEncryption.createTextTable(textTableFilePath);
         this.txtEncode = new TextEncoder();
         this.txtDecode = new TextDecoder();
     }
