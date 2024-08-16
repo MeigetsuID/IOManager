@@ -4,7 +4,6 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 export default class Aes {
     private static readonly algorithm = 'aes-256-cbc';
     private readInitConfig() {
-        /* v8 ignore next */
         if (!existsSync(this.keyPath)) throw new Error('No encryption key found');
         const initInfo = JSON.parse(readFileSync(this.keyPath, 'utf-8'));
         return {
