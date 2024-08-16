@@ -63,8 +63,9 @@ export default class MailAddressEncryption {
         );
     }
     public decrypt(encryptedEmail: string) {
-        const textArr = this.AESMgr.decrypt(encryptedEmail).match(/.{2}/g);
-        if (textArr === null) throw new Error('Invalid encrypted email');
+        const decryptedText = this.AESMgr.decrypt(encryptedEmail);
+        const textArr = decryptedText.match(/.{2}/g);
+        if (textArr === null || textArr.length !== decryptedText.length / 2) throw new Error('Invalid encrypted email');
         const byteNumArr = textArr.map(text => this.encTextTable.indexOf(text));
         if (byteNumArr.includes(-1)) throw new Error('Invalid encrypted email');
         const byteArr = new Uint8Array(byteNumArr);
