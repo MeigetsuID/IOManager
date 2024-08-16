@@ -1,7 +1,6 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import DatabaseConnector from '../DatabaseConnector';
 import MailAddressEncryption from './MailAddressEncryption';
-import Aes from './Aes';
 import { ToHash } from '@meigetsusoft/hash';
 
 export type CreateAccountArg = {
@@ -39,7 +38,7 @@ export class AccountManager extends DatabaseConnector {
     constructor() {
         super();
         if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
-        this.MailEnc = new MailAddressEncryption(new Aes('./system/account/aes.dat'));
+        this.MailEnc = new MailAddressEncryption();
     }
     private get mysql() {
         return this.DB.masteruserrecord;
