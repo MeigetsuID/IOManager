@@ -28,8 +28,8 @@ export default class MailAddressEncryption {
         return table;
     }
     constructor(
-        private AESMgr: Aes = new Aes('./system/account/aes.dat'),
-        textTableFilePath: string = './system/account/emailenc.csv'
+        textTableFilePath: string = './system/account/emailenc.csv',
+        private AESMgr: Aes = new Aes('./system/account/aes.dat')
     ) {
         this.encTextTable = existsSync(textTableFilePath)
             ? readFileSync(textTableFilePath, 'utf-8').split(',')
