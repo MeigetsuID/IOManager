@@ -134,5 +134,4 @@ dist
 migrations/
 
 # Meigetsu ID Cache Data
-system/**/*.dat
-system/idtoken/*
+system/**/*
