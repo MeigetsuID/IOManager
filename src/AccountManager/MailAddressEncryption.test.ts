@@ -10,7 +10,6 @@ test('Encryption Table Generation', () => {
 test('Mail Address Encryption', async () => {
     const mailEnc = new MailAddressEncryption();
     const encryptedMailAddress = mailEnc.encrypt('hello@mail.meigetsu.jp');
-    console.log(encryptedMailAddress);
     expect(mailEnc.decrypt(encryptedMailAddress)).toBe('hello@mail.meigetsu.jp');
 });
 
