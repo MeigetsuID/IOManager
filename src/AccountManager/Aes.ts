@@ -21,7 +21,7 @@ export default class Aes {
             iv: iv,
         };
     }
-    constructor(private keyPath: string) {
+    constructor(private keyPath: string = './system/account/aes.dat') {
         if (!existsSync(keyPath)) Aes.createKey(keyPath);
     }
     encrypt(text: string) {        
