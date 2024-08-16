@@ -28,7 +28,7 @@ export default class MailAddressEncryption {
         return table;
     }
     constructor(
-        private AESMgr: Aes,
+        private AESMgr: Aes = new Aes('./system/account/aes.dat'),
         textTableFilePath: string = './system/account/emailenc.csv'
     ) {
         this.encTextTable = existsSync(textTableFilePath)
