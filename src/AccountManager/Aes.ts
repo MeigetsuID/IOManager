@@ -3,8 +3,10 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 export default class Aes {
     private static readonly algorithm = 'aes-256-cbc';
-    private static readInitConfig() {
-        const initInfo = JSON.parse(readFileSync('./system/account/aes.dat', 'utf-8'));
+    private readInitConfig() {
+        /* v8 ignore next */
+        if (!existsSync(this.keyPath)) throw new Error('No encryption key found');
+        const initInfo = JSON.parse(readFileSync(this.keyPath, 'utf-8'));
         return {
             key: Buffer.from(initInfo.key, 'hex'),
             iv: Buffer.from(initInfo.iv, 'hex'),
@@ -22,18 +24,14 @@ export default class Aes {
     constructor(private keyPath: string) {
         if (!existsSync(keyPath)) Aes.createKey(keyPath);
     }
-    encrypt(text: string) {
-        /* v8 ignore next */
-        if (!existsSync(this.keyPath)) throw new Error('No encryption key found');
-        const { key, iv } = Aes.readInitConfig();
+    encrypt(text: string) {        
+        const { key, iv } = this.readInitConfig();
         const cipher = createCipheriv(Aes.algorithm, key, iv);
         const encrypted = Buffer.concat([cipher.update(text, 'utf-8'), cipher.final()]);
         return encrypted.toString('hex');
     }
     decrypt(encryptedText: string) {
-        /* v8 ignore next */
-        if (!existsSync(this.keyPath)) throw new Error('No encryption key found');
-        const { key, iv } = Aes.readInitConfig();
+        const { key, iv } = this.readInitConfig();
         const decipher = createDecipheriv(Aes.algorithm, key, iv);
         const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedText, 'hex')), decipher.final()]);
         return decrypted.toString('utf-8');
