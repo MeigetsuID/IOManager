@@ -11,7 +11,9 @@
     "eslint": "eslint --cache --ext .js,.ts .",
     "eslint:fix": "eslint --cache --ext .js,.ts . --fix",
     "coverage": "jest --coverage",
+    "pretest": "docker-compose up -d",
     "test": "jest",
+    "posttest": "docker-compose down",
     "postinstall": "prisma generate",
     "generate": "prisma generate"
   },
