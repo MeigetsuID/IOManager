@@ -101,7 +101,6 @@ export default class AccountManager extends DatabaseConnector {
         return await this.mysql
             .findUnique({
                 select: {
-                    ID: true,
                     UserID: true,
                     UserName: true,
                     AccountType: true,
