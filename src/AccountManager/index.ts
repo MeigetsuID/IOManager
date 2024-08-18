@@ -33,7 +33,7 @@ export type CheckAvailableArg = Partial<{
     mailaddress: string;
 }>;
 
-export class AccountManager extends DatabaseConnector {
+export default class AccountManager extends DatabaseConnector {
     private MailEnc: MailAddressEncryption;
     constructor() {
         super();
