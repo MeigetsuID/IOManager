@@ -22,3 +22,20 @@ test('Get Account/User ID', async () => {
     };
     expect(AccountInfo).toStrictEqual(Expect);
 });
+
+test('Get Account/Sign In/System ID', async () => {
+    const AccountInfo = await Account.SignIn('4010404006753', 'password01');
+    expect(AccountInfo).toBe('4010404006753');
+});
+
+test('Get Account/Sign In/User ID', async () => {
+    const AccountInfo = await Account.SignIn('meigetsu2020', 'password01');
+    expect(AccountInfo).toBe('4010404006753');
+});
+
+
+test('Get Account/Sign In/Mail Address', async () => {
+    const AccountInfo = await Account.SignIn('info@mail.meigetsu.jp', 'password01');
+    expect(AccountInfo).toBe('4010404006753');
+});
+
