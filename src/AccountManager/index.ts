@@ -15,9 +15,12 @@ export type CreateAccountArg = {
 export type GetAccountRes = {
     user_id: string;
     name: string;
-    mailaddress: string;
     account_type: number;
 };
+
+export type GetAccountResS = GetAccountRes & {
+    mailaddress: string;
+}
 
 export type UpdateAccountArg = Partial<{
     user_id: string;
@@ -64,7 +67,7 @@ export default class AccountManager extends DatabaseConnector {
      * @param id システムID
      * @returns
      */
-    public async SGetAccount(id: string): Promise<GetAccountRes | null> {
+    public async SGetAccount(id: string): Promise<GetAccountResS | null> {
         return await this.mysql
             .findUnique({
                 select: {
@@ -101,7 +104,6 @@ export default class AccountManager extends DatabaseConnector {
                     ID: true,
                     UserID: true,
                     UserName: true,
-                    MailAddress: true,
                     AccountType: true,
                 },
                 where: {
@@ -113,7 +115,6 @@ export default class AccountManager extends DatabaseConnector {
                 return {
                     user_id: data.UserID,
                     name: data.UserName,
-                    mailaddress: this.MailEnc.decrypt(data.MailAddress),
                     account_type: data.AccountType,
                 };
             });
