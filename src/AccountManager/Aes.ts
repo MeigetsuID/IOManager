@@ -23,7 +23,7 @@ export default class Aes {
     constructor(private keyPath: string = './system/account/aes.dat') {
         if (!existsSync(keyPath)) Aes.createKey(keyPath);
     }
-    encrypt(text: string) {        
+    encrypt(text: string) {
         const { key, iv } = this.readInitConfig();
         const cipher = createCipheriv(Aes.algorithm, key, iv);
         const encrypted = Buffer.concat([cipher.update(text, 'utf-8'), cipher.final()]);

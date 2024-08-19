@@ -20,7 +20,7 @@ export type GetAccountRes = {
 
 export type GetAccountResS = GetAccountRes & {
     mailaddress: string;
-}
+};
 
 export type UpdateAccountArg = Partial<{
     user_id: string;
