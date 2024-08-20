@@ -83,4 +83,25 @@ describe('Account Manager All Test', () => {
         const AccountInfo = await Account.SignIn('info1@mail.meigetsu.jp', 'password01');
         expect(AccountInfo).toBe(null);
     });
+
+    test('Create Account', async () => {
+        const AccountInfo = {
+            id: '5000011000001',
+            user_id: 'shugiin',
+            name: '衆議院',
+            mailaddress: 'shugiin@example.com',
+            password: 'password01',
+            account_type: 0,
+        };
+        await Account.CreateAccount(AccountInfo);
+        const Check = await Account.SGetAccount('5000011000001');
+        const Expect = {
+            id: '5000011000001',
+            user_id: 'shugiin',
+            name: '衆議院',
+            mailaddress: 'shugiin@example.com',
+            account_type: 0,
+        };
+        expect(Check).toStrictEqual(Expect);
+    });
 });
