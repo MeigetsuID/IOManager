@@ -43,6 +43,9 @@ export default class AccountManager extends DatabaseConnector {
         if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
         this.MailEnc = new MailAddressEncryption();
     }
+    [Symbol.asyncDispose]() {
+        return super[Symbol.asyncDispose]();
+    }
     private get mysql() {
         return this.DB.masteruserrecord;
     }
