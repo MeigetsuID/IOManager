@@ -124,6 +124,9 @@ export default class AccountManager extends DatabaseConnector {
      * @param arg 更新情報
      */
     public async UpdateAccount(id: string, arg: UpdateAccountArg) {
+        if (Object.keys(arg).length === 0) throw new Error('Update information is empty.');
+        const AccountInfo = await this.SGetAccount(id);
+        if (AccountInfo == null) return null;
         await this.mysql.update({
             data: {
                 UserID: arg.user_id,
@@ -136,6 +139,10 @@ export default class AccountManager extends DatabaseConnector {
                 ID: id,
             },
         });
+        Object.keys(arg).forEach(i => {
+            AccountInfo[i] = arg[i]
+        });
+        return AccountInfo;
     }
     /**
      * アカウントを削除する
