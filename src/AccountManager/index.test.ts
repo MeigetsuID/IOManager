@@ -104,4 +104,37 @@ describe('Account Manager All Test', () => {
         };
         expect(Check).toStrictEqual(Expect);
     });
+
+    test('Update Account/OK', async () => {
+        const SystemID = '1234567890123';
+        const AccountInfo = {
+            id: SystemID,
+            user_id: 'updatetest001',
+            name: '更新テスト001',
+            mailaddress: 'updatetest001@mail.meigetsu.jp',
+            password: 'password01',
+            account_type: 3
+        };
+        await Account.CreateAccount(AccountInfo);
+        const CheckRes = await Account.UpdateAccount(SystemID, { user_id: 'updatetest011', name: '更新テスト011' });
+        const CheckDB = await Account.SGetAccount(SystemID);
+        const Expect = {
+            id: SystemID,
+            user_id: 'updatetest011',
+            name: '更新テスト011',
+            mailaddress: 'updatetest001@mail.meigetsu.jp',
+            account_type: 3
+        };
+        expect(CheckRes).toStrictEqual(Expect);
+        expect(CheckDB).toStrictEqual(Expect);
+    });
+
+    test('Update Account/Not Found', async () => {
+        const Res = await Account.UpdateAccount('9876543210987', { user_id: 'updatetest012' });
+        expect(Res).toBe(null);
+    });
+
+    test('Update Account/Empty Key', async () => {
+        await expect(Account.UpdateAccount('4010404006753', {})).rejects.toThrow('Update information is empty.');
+    });
 });
