@@ -137,4 +137,26 @@ describe('Account Manager All Test', () => {
     test('Update Account/Empty Key', async () => {
         await expect(Account.UpdateAccount('4010404006753', {})).rejects.toThrow('Update information is empty.');
     });
+
+    test('Delete Account/OK', async () => {
+        const SystemID = '1234567890124';
+        const AccountInfo = {
+            id: SystemID,
+            user_id: 'deletetest001',
+            name: '削除テスト001',
+            mailaddress: 'deletetest001@mail.meigetsu.jp',
+            password: 'password01',
+            account_type: 4
+        };
+        await Account.CreateAccount(AccountInfo);
+        const CheckRes = await Account.DeleteAccount(SystemID);
+        const CheckDB = await Account.SGetAccount(SystemID);
+        expect(CheckRes).toBe(true);
+        expect(CheckDB).toBe(null);
+    });
+
+    test('Delete Account/Not Found', async () => {
+        const Res = await Account.DeleteAccount('9876543210987');
+        expect(Res).toBe(false);
+    });
 });
