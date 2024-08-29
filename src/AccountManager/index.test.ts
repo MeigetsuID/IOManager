@@ -159,4 +159,82 @@ describe('Account Manager All Test', () => {
         const Res = await Account.DeleteAccount('9876543210987');
         expect(Res).toBe(false);
     });
+
+    test('Available/OK', async () => {
+        const Res = await Account.Available({
+            corp_number: '1000011000005',
+            user_id: 'kokkai_toshokan',
+            mailaddress: 'kokkaitoshokan@example.com',
+        });
+        expect(Res).toBe(true);
+    });
+
+    test('Available/Corp Number/NG', async () => {
+        const Res = await Account.Available({
+            corp_number: '4010404006753',
+            user_id: 'meigetsu2021',
+            mailaddress: 'info01@mail.meigetsu.jp',
+        });
+        expect(Res).toBe(false);
+    });
+
+    test('Available/User ID/NG', async () => {
+        const Res = await Account.Available({
+            corp_number: '1000011000005',
+            user_id: 'meigetsu2020',
+            mailaddress: 'info01@mail.meigetsu.jp',
+        });
+        expect(Res).toBe(false);
+    });
+
+    test('Available/Mail Address/NG', async () => {
+        const Res = await Account.Available({
+            corp_number: '1000011000005',
+            user_id: 'meigetsu2021',
+            mailaddress: 'info@mail.meigetsu.jp',
+        });
+        expect(Res).toBe(false);
+    });
+
+    test('Available/Corp Number Only/OK', async () => {
+        const Res = await Account.Available({
+            corp_number: '1000011000005',
+        });
+        expect(Res).toBe(true);
+    });
+
+    test('Available/Corp Number Only/NG', async () => {
+        const Res = await Account.Available({
+            corp_number: '4010404006753',
+        });
+        expect(Res).toBe(false);
+    });
+
+    test('Available/User ID Only/OK', async () => {
+        const Res = await Account.Available({
+            user_id: 'meigetsu2021',
+        });
+        expect(Res).toBe(true);
+    });
+
+    test('Available/User ID Only/NG', async () => {
+        const Res = await Account.Available({
+            user_id: 'meigetsu2020',
+        });
+        expect(Res).toBe(false);
+    });
+
+    test('Available/Mail Address Only/OK', async () => {
+        const Res = await Account.Available({
+            mailaddress: 'info01@mail.meigetsu.jp',
+        });
+        expect(Res).toBe(true);
+    });
+
+    test('Available/Mail Address Only/NG', async () => {
+        const Res = await Account.Available({
+            mailaddress: 'info@mail.meigetsu.jp',
+        });
+        expect(Res).toBe(false);
+    });
 });
