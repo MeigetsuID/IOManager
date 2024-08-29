@@ -113,7 +113,7 @@ describe('Account Manager All Test', () => {
             name: '更新テスト001',
             mailaddress: 'updatetest001@mail.meigetsu.jp',
             password: 'password01',
-            account_type: 3
+            account_type: 3,
         };
         await Account.CreateAccount(AccountInfo);
         const CheckRes = await Account.UpdateAccount(SystemID, { user_id: 'updatetest011', name: '更新テスト011' });
@@ -123,7 +123,7 @@ describe('Account Manager All Test', () => {
             user_id: 'updatetest011',
             name: '更新テスト011',
             mailaddress: 'updatetest001@mail.meigetsu.jp',
-            account_type: 3
+            account_type: 3,
         };
         expect(CheckRes).toStrictEqual(Expect);
         expect(CheckDB).toStrictEqual(Expect);
@@ -146,7 +146,7 @@ describe('Account Manager All Test', () => {
             name: '削除テスト001',
             mailaddress: 'deletetest001@mail.meigetsu.jp',
             password: 'password01',
-            account_type: 4
+            account_type: 4,
         };
         await Account.CreateAccount(AccountInfo);
         const CheckRes = await Account.DeleteAccount(SystemID);

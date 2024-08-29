@@ -143,7 +143,7 @@ export default class AccountManager extends DatabaseConnector {
             },
         });
         Object.keys(arg).forEach(i => {
-            AccountInfo[i] = arg[i]
+            AccountInfo[i] = arg[i];
         });
         return AccountInfo;
     }
