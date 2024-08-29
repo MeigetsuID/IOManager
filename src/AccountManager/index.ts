@@ -151,12 +151,15 @@ export default class AccountManager extends DatabaseConnector {
      * アカウントを削除する
      * @param id システムID
      */
-    public async DeleteAccount(id: string) {
+    public async DeleteAccount(id: string): Promise<boolean> {
+        const AccountInfo = await this.SGetAccount(id);
+        if (AccountInfo == null) return false;
         await this.mysql.delete({
             where: {
                 ID: id,
             },
         });
+        return true;
     }
     /**
      * IDとパスワードを用いてサインインの認証を行う
