@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import Aes from './Aes';
+import { readCSV, writeCSV } from 'nodeeasyfileio';
 
 export default class MailAddressEncryption {
     private encTextTable: string[];
@@ -24,7 +25,7 @@ export default class MailAddressEncryption {
         for (let i = 0; i < 16; i++) {
             for (let j = 0; j < 16; j++) table.push(useText[i] + useText[j]);
         }
-        writeFileSync(textTableFilePath, table.join(','));
+        writeCSV(textTableFilePath, table);
         return table;
     }
     constructor(
@@ -32,7 +33,7 @@ export default class MailAddressEncryption {
         private AESMgr: Aes = new Aes('./system/account/aes.dat')
     ) {
         this.encTextTable = existsSync(textTableFilePath)
-            ? readFileSync(textTableFilePath, 'utf-8').split(',')
+            ? readCSV(textTableFilePath).flatMap((row: string[]) => row)
             : MailAddressEncryption.createTextTable(textTableFilePath);
         this.txtEncode = new TextEncoder();
         this.txtDecode = new TextDecoder();
