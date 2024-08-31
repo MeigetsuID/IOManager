@@ -144,6 +144,7 @@ export default class AccountManager extends DatabaseConnector {
             },
         });
         Object.keys(arg).forEach(i => {
+            if (i === 'password') return;
             AccountInfo[i] = arg[i];
         });
         return AccountInfo;
