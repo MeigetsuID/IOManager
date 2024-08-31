@@ -15,7 +15,7 @@ CREATE TABLE `masteruserrecord` (
 
 -- CreateTable
 CREATE TABLE `application` (
-    `AppID` VARCHAR(32) NOT NULL,
+    `AppID` VARCHAR(36) NOT NULL,
     `AppName` TEXT NOT NULL,
     `DeveloperID` VARCHAR(13) NOT NULL,
 
@@ -25,9 +25,9 @@ CREATE TABLE `application` (
 
 -- CreateTable
 CREATE TABLE `virtualid` (
-    `VirtualID` VARCHAR(32) NOT NULL,
+    `VirtualID` VARCHAR(36) NOT NULL,
     `ID` VARCHAR(13) NOT NULL,
-    `AppID` VARCHAR(32) NOT NULL,
+    `AppID` VARCHAR(36) NOT NULL,
 
     UNIQUE INDEX `virtualid_VirtualID_key`(`VirtualID`),
     PRIMARY KEY (`VirtualID`)
@@ -36,7 +36,7 @@ CREATE TABLE `virtualid` (
 -- CreateTable
 CREATE TABLE `accesstoken` (
     `Token` VARCHAR(128) NOT NULL,
-    `VirtualID` VARCHAR(32) NOT NULL,
+    `VirtualID` VARCHAR(36) NOT NULL,
     `Scopes` TEXT NOT NULL,
     `ExpiredAt` DATETIME NOT NULL,
 
@@ -47,7 +47,7 @@ CREATE TABLE `accesstoken` (
 -- CreateTable
 CREATE TABLE `refreshtoken` (
     `Token` VARCHAR(128) NOT NULL,
-    `VirtualID` VARCHAR(32) NOT NULL,
+    `VirtualID` VARCHAR(36) NOT NULL,
     `Scopes` TEXT NOT NULL,
     `ExpiredAt` DATETIME NOT NULL,
 

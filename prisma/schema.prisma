@@ -26,16 +26,16 @@ model masteruserrecord {
 }
 
 model application {
-    AppID String @db.VarChar(32) @unique @id
+    AppID String @db.VarChar(36) @unique @id
     AppName String @db.Text
     DeveloperID String @db.VarChar(13)
     Account masteruserrecord @relation(fields: [DeveloperID], references: [ID])
 }
 
 model virtualid {
-    VirtualID String @db.VarChar(32) @unique @id
+    VirtualID String @db.VarChar(36) @unique @id
     ID String @db.VarChar(13)
-    AppID String @db.VarChar(32)
+    AppID String @db.VarChar(36)
     Account masteruserrecord @relation(fields: [ID], references: [ID])
     AccessToken accesstoken[]
     RefreshToken refreshtoken[]
@@ -43,7 +43,7 @@ model virtualid {
 
 model accesstoken {
     Token String @db.VarChar(128) @unique @id
-    VirtualID String @db.VarChar(32)
+    VirtualID String @db.VarChar(36)
     Scopes String @db.Text
     ExpiredAt DateTime @db.DateTime()
     VirutalID virtualid @relation(fields: [VirtualID], references: [VirtualID])
@@ -51,7 +51,7 @@ model accesstoken {
 
 model refreshtoken {
     Token String @db.VarChar(128) @unique @id
-    VirtualID String @db.VarChar(32)
+    VirtualID String @db.VarChar(36)
     Scopes String @db.Text
     ExpiredAt DateTime @db.DateTime()
     VirutalID virtualid @relation(fields: [VirtualID], references: [VirtualID])
