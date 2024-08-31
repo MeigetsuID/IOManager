@@ -105,7 +105,7 @@ describe('Account Manager All Test', () => {
         expect(Check).toStrictEqual(Expect);
     });
 
-    test('Update Account/OK', async () => {
+    test('Update Account/OK 1', async () => {
         const SystemID = '1234567890123';
         const AccountInfo = {
             id: SystemID,
@@ -127,6 +127,39 @@ describe('Account Manager All Test', () => {
         };
         expect(CheckRes).toStrictEqual(Expect);
         expect(CheckDB).toStrictEqual(Expect);
+    });
+
+    test('Update Account/OK 2', async () => {
+        const SystemID = '1234567890122';
+        const AccountInfo = {
+            id: SystemID,
+            user_id: 'updatetest002',
+            name: '更新テスト002',
+            mailaddress: 'updatetest002@mail.meigetsu.jp',
+            password: 'password01',
+            account_type: 3,
+        };
+        await Account.CreateAccount(AccountInfo);
+        const CheckSignIn1 = await Account.SignIn('updatetest002', 'password01');
+        const CheckRes = await Account.UpdateAccount(SystemID, {
+            user_id: 'updatetest012',
+            name: '更新テスト012',
+            mailaddress: 'updatetest012@mail.meigetsu.jp',
+            password: 'password02',
+        });
+        const CheckDB = await Account.SGetAccount(SystemID);
+        const CheckSignIn2 = await Account.SignIn('updatetest012', 'password02');
+        const Expect = {
+            id: SystemID,
+            user_id: 'updatetest012',
+            name: '更新テスト012',
+            mailaddress: 'updatetest012@mail.meigetsu.jp',
+            account_type: 3,
+        };
+        expect(CheckSignIn1).toBe(SystemID);
+        expect(CheckRes).toStrictEqual(Expect);
+        expect(CheckDB).toStrictEqual(Expect);
+        expect(CheckSignIn2).toBe(SystemID);
     });
 
     test('Update Account/Not Found', async () => {
