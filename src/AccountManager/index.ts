@@ -43,6 +43,7 @@ export default class AccountManager extends DatabaseConnector {
         if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
         this.MailEnc = new MailAddressEncryption();
     }
+    /* v8 ignore next 3 */
     [Symbol.asyncDispose]() {
         return super[Symbol.asyncDispose]();
     }
