@@ -11,8 +11,9 @@ const config: Config = {
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
     transform: {
-        '^.+\\.tsx?$': 'ts-jest',
+        '^.+\\.[tj]sx?$': 'ts-jest',
     },
+    transformIgnorePatterns: [ 'node_modules/(?!(nodeeasyfileio))'],
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
