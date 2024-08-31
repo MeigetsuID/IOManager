@@ -11,6 +11,7 @@ export default class DatabaseConnector {
         if (DatabaseConnector.connection === 0) DatabaseConnector.instance = new PrismaClient();
         DatabaseConnector.connection++;
     }
+    /* v8 ignore next 5 */
     [Symbol.asyncDispose]() {
         DatabaseConnector.connection--;
         if (DatabaseConnector.connection === 0) return DatabaseConnector.instance.$disconnect();
