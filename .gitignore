@@ -132,6 +132,3 @@ dist
 
 # prisma
 migrations/
-
-# Meigetsu ID Cache Data
-system/**/*
