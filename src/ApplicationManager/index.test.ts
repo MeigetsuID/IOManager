@@ -48,4 +48,26 @@ describe('Application Manager All Test', () => {
         expect(ApplicationInfo.client_id).toMatch(/^app-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
         expect(ApplicationInfo.client_secret).toMatch(/^[0-9a-zA-Z]{64}$/);
     });
+
+    test('Get Application', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        };
+        const Expect = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            developer: '明月',
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
+        expect(ApplicationInfo).toStrictEqual(Expect);
+    });
 });
