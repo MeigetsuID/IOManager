@@ -18,6 +18,7 @@ export type CreateApplicationArg = ApplicationInformation & {
 };
 
 export type ResApplicationInformation = ApplicationInformation & {
+    client_id?: string;
     developer: string;
 };
 
@@ -44,17 +45,28 @@ export function CreateAppSecret() {
 export function CreateApplicationInformationResponse(
     AppID: string,
     AppName: string,
-    Developer: string
+    Developer: string,
+    ContainAppID: boolean = false
 ): ResApplicationInformation {
     const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
-    return {
-        name: AppName,
-        description: DiskRecord.description,
-        redirect_uri: DiskRecord.redirect_uri,
-        privacy_policy: DiskRecord.privacy_policy,
-        terms_of_service: DiskRecord.terms_of_service,
-        developer: Developer,
-    };
+    return ContainAppID
+        ? {
+              client_id: AppID,
+              name: AppName,
+              description: DiskRecord.description,
+              redirect_uri: DiskRecord.redirect_uri,
+              privacy_policy: DiskRecord.privacy_policy,
+              terms_of_service: DiskRecord.terms_of_service,
+              developer: Developer,
+          }
+        : {
+              name: AppName,
+              description: DiskRecord.description,
+              redirect_uri: DiskRecord.redirect_uri,
+              privacy_policy: DiskRecord.privacy_policy,
+              terms_of_service: DiskRecord.terms_of_service,
+              developer: Developer,
+          };
 }
 
 export default class ApplicationManager extends DatabaseConnector {
@@ -147,7 +159,7 @@ export default class ApplicationManager extends DatabaseConnector {
             })
             .then(records => {
                 return records.map(record =>
-                    CreateApplicationInformationResponse(record.AppID, record.AppName, record.Account.UserName)
+                    CreateApplicationInformationResponse(record.AppID, record.AppName, record.Account.UserName, true)
                 );
             });
     }
