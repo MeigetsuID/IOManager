@@ -70,4 +70,32 @@ describe('Application Manager All Test', () => {
         const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
         expect(ApplicationInfo).toStrictEqual(Expect);
     });
+
+    test('Get Applications', async () => {
+        const Apps = [
+            {
+                name: 'App 1',
+                description: 'This is application 1.',
+                redirect_uri: ['https://example.com/app1'],
+                privacy_policy: 'https://example.com/app1/privacy_policy',
+                terms_of_service: 'https://example.com/app1/terms_of_service',
+                public: false,
+            },
+        ];
+        const CreateApps = Apps.map(async app => {
+            const AppInfo = await Application.CreateApp('4010404006743', app);
+            return {
+                client_id: AppInfo.client_id,
+                name: app.name,
+                description: app.description,
+                redirect_uri: app.redirect_uri,
+                privacy_policy: app.privacy_policy,
+                terms_of_service: app.terms_of_service,
+                developer: 'アプリケーションマネージャーテスト用アカウント',
+            };
+        });
+        const Expect = await Promise.all(CreateApps);
+        const ApplicationInfos = await Application.GetApps('4010404006743');
+        expect(ApplicationInfos).toStrictEqual(Expect);
+    });
 });
