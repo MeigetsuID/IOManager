@@ -13,7 +13,7 @@ const config: Config = {
     transform: {
         '^.+\\.[tj]sx?$': 'ts-jest',
     },
-    transformIgnorePatterns: [ 'node_modules/(?!(nodeeasyfileio))'],
+    transformIgnorePatterns: ['node_modules/(?!(nodeeasyfileio))'],
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
