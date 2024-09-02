@@ -77,4 +77,28 @@ describe('Application Manager All Test', () => {
         const ApplicationInfos = await Application.GetApps('4010404006743');
         expect(ApplicationInfos).toStrictEqual(Expect);
     });
+
+    test('Update Applications', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        };
+        const Expect = {
+            name: 'Test Application 2',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            developer: '明月',
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, { regenerate_secret: false, name: 'Test Application 2', redirect_uri: ['https://example.com', 'https://example.com/test'] });
+        const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
+        expect(UpdateRes).toStrictEqual({ client_id: AppIDAndSecret.client_id });
+        expect(ApplicationInfo).toStrictEqual(Expect);
+    });
 });
