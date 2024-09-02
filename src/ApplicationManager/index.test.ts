@@ -150,4 +150,13 @@ describe('Application Manager All Test', () => {
         });
         expect(isValid(iAppIDAndSecretSpec, UpdateRes)).toBe(true);
     });
+
+    test('Update Applications/Not Found', async () => {
+        const UpdateRes = await Application.UpdateApp(`app-${uuidv4()}`, {
+            regenerate_secret: false,
+            name: 'Test Application 2',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+        });
+        expect(UpdateRes).toBe(null);
+    });
 });
