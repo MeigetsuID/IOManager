@@ -107,7 +107,11 @@ describe('Application Manager All Test', () => {
             developer: '明月',
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
-        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, { regenerate_secret: false, name: 'Test Application 2', redirect_uri: ['https://example.com', 'https://example.com/test'] });
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
+            regenerate_secret: false,
+            name: 'Test Application 2',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+        });
         const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
         expect(UpdateRes).toStrictEqual({ client_id: AppIDAndSecret.client_id });
         expect(ApplicationInfo).toStrictEqual(Expect);
