@@ -1,27 +1,7 @@
-import * as mysql from 'mysql2';
-import { promisify } from 'util';
 import AccountManager from '.';
 
 describe('Account Manager All Test', () => {
     const Account = new AccountManager();
-    beforeAll(async () => {
-        const dbConfig = {
-            host: 'localhost',
-            user: 'root',
-            password: 'root',
-        };
-        const checkMariaDBConnection = async () => {
-            const connection = mysql.createConnection(dbConfig);
-            const connect = promisify(connection.connect.bind(connection));
-            try {
-                await connect();
-                connection.end();
-            } catch (error) {
-                setTimeout(checkMariaDBConnection, 1000); // 1秒ごとに再試行
-            }
-        };
-        return await checkMariaDBConnection();
-    });
     test('Get Account/System ID/Found', async () => {
         const AccountInfo = await Account.SGetAccount('4010404006753');
         const Expect = {
