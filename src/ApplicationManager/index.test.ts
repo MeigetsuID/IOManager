@@ -1,4 +1,5 @@
 import ApplicationManager, { CreateAppID, CreateAppSecret } from '.';
+import { v4 as uuidv4 } from 'uuid';
 
 describe('Application Manager Sub Module Test', () => {
     test('Create Application ID', () => {
@@ -28,7 +29,7 @@ describe('Application Manager All Test', () => {
         expect(ApplicationInfo.client_secret).toMatch(/^[0-9a-zA-Z]{64}$/);
     });
 
-    test('Get Application', async () => {
+    test('Get Application/OK', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
             description: 'This is a test application.',
@@ -48,6 +49,11 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
         expect(ApplicationInfo).toStrictEqual(Expect);
+    });
+
+    test('Get Application/Not Found', async () => {
+        const ApplicationInfo = await Application.GetApp(`app-${uuidv4()}`);
+        expect(ApplicationInfo).toBe(null);
     });
 
     test('Get Applications', async () => {
@@ -76,6 +82,11 @@ describe('Application Manager All Test', () => {
         const Expect = await Promise.all(CreateApps);
         const ApplicationInfos = await Application.GetApps('4010404006743');
         expect(ApplicationInfos).toStrictEqual(Expect);
+    });
+
+    test('Get Applications/Not Found', async () => {
+        const ApplicationInfos = await Application.GetApps('4010404006744');
+        expect(ApplicationInfos).toStrictEqual([]);
     });
 
     test('Update Applications', async () => {
