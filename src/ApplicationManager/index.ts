@@ -204,6 +204,28 @@ export default class ApplicationManager extends DatabaseConnector {
         unlinkSync(`./system/application/data/${AppID}.dat`);
         return true;
     }
+    public async DeleteApps(DeveloperID: string): Promise<boolean> {
+        return await this.mysql.findMany({
+            select: {
+                AppID: true,
+            },
+            where: {
+                DeveloperID: DeveloperID,
+            },
+        }).then(records => {
+            if (records.length === 0) return false;
+            return this.mysql.deleteMany({
+                where: {
+                    DeveloperID: DeveloperID,
+                },
+            }).then(() => {
+                records.forEach(record => {
+                    unlinkSync(`./system/application/data/${record.AppID}.dat`);
+                });
+                return true;
+            });
+        });
+    }
     public async AuthApp(AppID: string, AppSecret: string): Promise<string | null> {
         return await this.mysql
             .findUnique({
