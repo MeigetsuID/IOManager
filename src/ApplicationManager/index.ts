@@ -194,7 +194,7 @@ export default class ApplicationManager extends DatabaseConnector {
                   client_id: AppID,
               };
     }
-    public async DeleteApp(AppID: string) {
+    public async DeleteApp(AppID: string): Promise<boolean> {
         if (await this.IsAppIDFree(AppID)) return false;
         await this.mysql.delete({
             where: {
