@@ -1,15 +1,26 @@
 import ApplicationManager, { CreateAppID, CreateAppSecret } from '.';
 import { v4 as uuidv4 } from 'uuid';
+import pkg from '@json-spec/core';
+const { spec, object, isValid } = pkg;
+const AppIDReg = /^app-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/;
+const AppSecretReg = /^[0-9a-zA-Z]{64}$/;
+
+const cAppIDAndSecretSpec = object({
+    required: {
+        client_id: spec(i => AppIDReg.test(i)),
+        client_secret: spec(i => AppSecretReg.test(i)),
+    }
+});
 
 describe('Application Manager Sub Module Test', () => {
     test('Create Application ID', () => {
         const AppID = CreateAppID();
-        expect(AppID).toMatch(/^app-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
+        expect(AppID).toMatch(AppIDReg);
     });
 
     test('Create Application Secret', () => {
         const AppSecret = CreateAppSecret();
-        expect(AppSecret).toMatch(/^[0-9a-zA-Z]{64}$/);
+        expect(AppSecret).toMatch(AppSecretReg);
     });
 });
 
@@ -25,8 +36,7 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             public: false,
         });
-        expect(ApplicationInfo.client_id).toMatch(/^app-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
-        expect(ApplicationInfo.client_secret).toMatch(/^[0-9a-zA-Z]{64}$/);
+        expect(isValid(cAppIDAndSecretSpec, ApplicationInfo)).toBe(true);
     });
 
     test('Get Application/OK', async () => {
