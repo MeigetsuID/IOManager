@@ -184,7 +184,7 @@ export default class ApplicationManager extends DatabaseConnector {
         Object.keys(DiskRecord).forEach(key => {
             if (arg[key]) DiskRecord[key] = arg[key];
         });
-        writeJson(`./system/application/data/${AppID}.dat`, DiskRecord);
+        writeJson(`./system/application/data/${AppID}.dat`, DiskRecord, true);
         return {
             client_id: AppID,
             client_secret: AppSecret,
