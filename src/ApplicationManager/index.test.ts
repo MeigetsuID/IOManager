@@ -159,4 +159,34 @@ describe('Application Manager All Test', () => {
         });
         expect(UpdateRes).toBe(null);
     });
+
+    test('Delete Application/OK', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        const GetResultBeforeDelete = await Application.GetApp(AppIDAndSecret.client_id);
+        expect(GetResultBeforeDelete).toStrictEqual({
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            developer: '明月',
+        });
+        const DeleteRes = await Application.DeleteApp(AppIDAndSecret.client_id);
+        expect(DeleteRes).toBe(true);
+        const GetResultAfterDelete = await Application.GetApp(AppIDAndSecret.client_id);
+        expect(GetResultAfterDelete).toBe(null);
+    });
+
+    test('Delete Application/Not Found', async () => {
+        const DeleteRes = await Application.DeleteApp(`app-${uuidv4()}`);
+        expect(DeleteRes).toBe(false);
+    });
 });
