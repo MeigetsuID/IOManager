@@ -185,10 +185,14 @@ export default class ApplicationManager extends DatabaseConnector {
             if (arg[key]) DiskRecord[key] = arg[key];
         });
         writeJson(`./system/application/data/${AppID}.dat`, DiskRecord, true);
-        return {
-            client_id: AppID,
-            client_secret: AppSecret,
-        };
+        return AppSecret
+            ? {
+                  client_id: AppID,
+                  client_secret: AppSecret,
+              }
+            : {
+                  client_id: AppID,
+              };
     }
     public async DeleteApp(AppID: string) {
         if (await this.IsAppIDFree(AppID)) return false;
