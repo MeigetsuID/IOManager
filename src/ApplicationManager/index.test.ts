@@ -445,4 +445,18 @@ describe('Application Manager All Test', () => {
         const AuthRes = await Application.AuthApp(`app-${uuidv4()}`, 'test');
         expect(AuthRes).toBe(null);
     });
+
+    test('Auth Application/App Secret Error', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, 'test');
+        expect(AuthRes).toBe(null);
+    });
 });
