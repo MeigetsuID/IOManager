@@ -12,6 +12,12 @@ const cAppIDAndSecretSpec = object({
     },
 });
 
+const cAppIDSpec = object({
+    required: {
+        client_id: spec(i => AppIDReg.test(i)),
+    },
+});
+
 describe('Application Manager Sub Module Test', () => {
     test('Create Application ID', () => {
         const AppID = CreateAppID();
@@ -48,7 +54,7 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             public: true,
         });
-        expect(isValid(cAppIDAndSecretSpec, ApplicationInfo)).toBe(true);
+        expect(isValid(cAppIDSpec, ApplicationInfo)).toBe(true);
     });
 
     test('Get Application/OK', async () => {
