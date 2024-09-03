@@ -9,7 +9,7 @@ const cAppIDAndSecretSpec = object({
     required: {
         client_id: spec(i => AppIDReg.test(i)),
         client_secret: spec(i => AppSecretReg.test(i)),
-    }
+    },
 });
 
 describe('Application Manager Sub Module Test', () => {
@@ -139,7 +139,7 @@ describe('Application Manager All Test', () => {
                 privacy_policy: 'https://example.com/app10/privacy_policy',
                 terms_of_service: 'https://example.com/app10/terms_of_service',
                 public: false,
-            }
+            },
         ];
         const CreateApps = Apps.map(async app => {
             const AppInfo = await Application.CreateApp('4010404006743', app);
@@ -215,7 +215,7 @@ describe('Application Manager All Test', () => {
             required: {
                 client_id: spec(i => i === AppIDAndSecret.client_id),
                 client_secret: spec(i => AppSecretReg.test(i)),
-            }
+            },
         });
         expect(isValid(iAppIDAndSecretSpec, UpdateRes)).toBe(true);
     });
@@ -332,7 +332,7 @@ describe('Application Manager All Test', () => {
                 privacy_policy: 'https://example.com/app10/privacy_policy',
                 terms_of_service: 'https://example.com/app10/terms_of_service',
                 public: false,
-            }
+            },
         ];
         const CreateApps = Apps.map(async app => {
             const AppInfo = await Application.CreateApp('4010404006723', app);
@@ -360,7 +360,7 @@ describe('Application Manager All Test', () => {
         const DeleteResEmpty = await Application.DeleteApps('4010404006723');
         expect(DeleteResEmpty).toBe(false);
     });
-    
+
     test('Auth Application/OK', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
