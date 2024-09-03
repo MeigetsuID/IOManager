@@ -40,6 +40,7 @@ export default class AccountManager extends DatabaseConnector {
     private MailEnc: MailAddressEncryption;
     constructor() {
         super();
+        /* v8 ignore next */
         if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
         this.MailEnc = new MailAddressEncryption();
     }
