@@ -180,7 +180,7 @@ describe('Application Manager All Test', () => {
         expect(ApplicationInfos).toStrictEqual([]);
     });
 
-    test('Update Applications/No Regenerate Secret', async () => {
+    test('Update Applications/Confidential/No Regenerate Secret', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
             description: 'This is a test application.',
@@ -208,7 +208,7 @@ describe('Application Manager All Test', () => {
         expect(ApplicationInfo).toStrictEqual(Expect);
     });
 
-    test('Update Applications/Regenerate Secret', async () => {
+    test('Update Applications/Confidential/Regenerate Secret', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
             description: 'This is a test application.',
@@ -230,6 +230,53 @@ describe('Application Manager All Test', () => {
             },
         });
         expect(isValid(iAppIDAndSecretSpec, UpdateRes)).toBe(true);
+    });
+
+    test('Update Applications/Public/No Regenerate Secret', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: true,
+        };
+        const Expect = {
+            name: 'Test Application 2',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            developer: '明月',
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
+            regenerate_secret: false,
+            name: 'Test Application 2',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+        });
+        const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
+        expect(UpdateRes).toStrictEqual({ client_id: AppIDAndSecret.client_id });
+        expect(ApplicationInfo).toStrictEqual(Expect);
+    });
+
+    test('Update Applications/Public/Regenerate Secret', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: true,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        await expect(
+            Application.UpdateApp(AppIDAndSecret.client_id, {
+                regenerate_secret: true,
+                name: 'Test Application 2',
+                redirect_uri: ['https://example.com', 'https://example.com/test'],
+            })
+        ).rejects.toThrow('This application cannot regenerate client secret.');
     });
 
     test('Update Applications/Not Found', async () => {

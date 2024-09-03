@@ -70,6 +70,7 @@ export function CreateApplicationInformationResponse(
 }
 
 export default class ApplicationManager extends DatabaseConnector {
+    private static readonly Public = 'EAD6C0F0123381BE2204A8F8778060C7D0CEC9A3F23C72D2532A75A57742B8A8FCBA3FB725F04DAB5AF4CD4823A44DC098167F50941C8CCDFA13131D23642A09';
     constructor() {
         super();
     }
@@ -171,6 +172,8 @@ export default class ApplicationManager extends DatabaseConnector {
     ): Promise<{ client_id: string; client_secret?: string } | null> {
         if (await this.IsAppIDFree(AppID)) return null;
         const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
+        if (arg.regenerate_secret && DiskRecord.secret === ApplicationManager.Public)
+            throw new Error('This application cannot regenerate client secret.');
         const AppSecret = arg.regenerate_secret ? CreateAppSecret() : undefined;
         if (AppSecret) DiskRecord.secret = ToHash(AppSecret, 'echo');
         if (arg.name) {
