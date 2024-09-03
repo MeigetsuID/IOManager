@@ -100,6 +100,7 @@ export default class ApplicationManager extends DatabaseConnector {
     ): Promise<{ client_id: string; client_secret?: string }> {
         const AppID = CreateAppID();
         const AppSecret = arg.public ? 'public' : CreateAppSecret();
+        /* v8 ignore next */
         if (!(await this.IsAppIDFree(AppID))) return await this.CreateApp(DeveloperID, arg);
         const DiskWriteInfo: DiskSaveRecord = {
             secret: ToHash(AppSecret, 'echo'),
