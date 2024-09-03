@@ -27,7 +27,7 @@ describe('Application Manager Sub Module Test', () => {
 describe('Application Manager All Test', () => {
     const DeveloperID = '4010404006753';
     const Application = new ApplicationManager();
-    test('Create Application', async () => {
+    test('Create Application/Confidential', async () => {
         const ApplicationInfo = await Application.CreateApp(DeveloperID, {
             name: 'Test Application',
             description: 'This is a test application.',
@@ -35,6 +35,18 @@ describe('Application Manager All Test', () => {
             privacy_policy: 'https://example.com/privacy_policy',
             terms_of_service: 'https://example.com/terms_of_service',
             public: false,
+        });
+        expect(isValid(cAppIDAndSecretSpec, ApplicationInfo)).toBe(true);
+    });
+
+    test('Create Application/Public', async () => {
+        const ApplicationInfo = await Application.CreateApp(DeveloperID, {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: true,
         });
         expect(isValid(cAppIDAndSecretSpec, ApplicationInfo)).toBe(true);
     });
@@ -361,7 +373,7 @@ describe('Application Manager All Test', () => {
         expect(DeleteResEmpty).toBe(false);
     });
 
-    test('Auth Application/OK', async () => {
+    test('Auth Application/Confidential/OK', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
             description: 'This is a test application.',
@@ -371,6 +383,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
         const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret);
         expect(AuthRes).toBe(DeveloperID);
     });

@@ -96,7 +96,7 @@ export default class ApplicationManager extends DatabaseConnector {
     public async CreateApp(
         DeveloperID: string,
         arg: CreateApplicationArg
-    ): Promise<{ client_id: string; client_secret: string }> {
+    ): Promise<{ client_id: string; client_secret?: string }> {
         const AppID = CreateAppID();
         const AppSecret = arg.public ? 'public' : CreateAppSecret();
         if (!(await this.IsAppIDFree(AppID))) return await this.CreateApp(DeveloperID, arg);
@@ -115,10 +115,12 @@ export default class ApplicationManager extends DatabaseConnector {
             },
         });
         writeJson(`./system/application/data/${AppID}.dat`, DiskWriteInfo);
-        return {
-            client_id: AppID,
-            client_secret: AppSecret,
-        };
+        return arg.public
+            ? { client_id: AppID }
+            : {
+                  client_id: AppID,
+                  client_secret: AppSecret,
+              };
     }
     public async GetApp(AppID: string): Promise<ResApplicationInformation | null> {
         return await this.mysql
