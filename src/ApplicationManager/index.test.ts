@@ -76,6 +76,70 @@ describe('Application Manager All Test', () => {
                 terms_of_service: 'https://example.com/app1/terms_of_service',
                 public: false,
             },
+            {
+                name: 'App 3',
+                description: 'This is application 3.',
+                redirect_uri: ['https://example.com/app3'],
+                privacy_policy: 'https://example.com/app3/privacy_policy',
+                terms_of_service: 'https://example.com/app3/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 4',
+                description: 'This is application 4.',
+                redirect_uri: ['https://example.com/app4'],
+                privacy_policy: 'https://example.com/app4/privacy_policy',
+                terms_of_service: 'https://example.com/app4/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 5',
+                description: 'This is application 5.',
+                redirect_uri: ['https://example.com/app5'],
+                privacy_policy: 'https://example.com/app5/privacy_policy',
+                terms_of_service: 'https://example.com/app5/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 6',
+                description: 'This is application 6.',
+                redirect_uri: ['https://example.com/app6'],
+                privacy_policy: 'https://example.com/app6/privacy_policy',
+                terms_of_service: 'https://example.com/app6/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 7',
+                description: 'This is application 7.',
+                redirect_uri: ['https://example.com/app7'],
+                privacy_policy: 'https://example.com/app7/privacy_policy',
+                terms_of_service: 'https://example.com/app7/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 8',
+                description: 'This is application 8.',
+                redirect_uri: ['https://example.com/app8'],
+                privacy_policy: 'https://example.com/app8/privacy_policy',
+                terms_of_service: 'https://example.com/app8/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 9',
+                description: 'This is application 9.',
+                redirect_uri: ['https://example.com/app9'],
+                privacy_policy: 'https://example.com/app9/privacy_policy',
+                terms_of_service: 'https://example.com/app9/terms_of_service',
+                public: false,
+            },
+            {
+                name: 'App 10',
+                description: 'This is application 10.',
+                redirect_uri: ['https://example.com/app10'],
+                privacy_policy: 'https://example.com/app10/privacy_policy',
+                terms_of_service: 'https://example.com/app10/terms_of_service',
+                public: false,
+            }
         ];
         const CreateApps = Apps.map(async app => {
             const AppInfo = await Application.CreateApp('4010404006743', app);
@@ -90,7 +154,12 @@ describe('Application Manager All Test', () => {
             };
         });
         const Expect = await Promise.all(CreateApps);
+        Expect.sort((a, b) => a.client_id.localeCompare(b.client_id));
         const ApplicationInfos = await Application.GetApps('4010404006743');
+        ApplicationInfos.sort((a, b) => {
+            if (!a.client_id || !b.client_id) throw new Error('client_id is not found.');
+            return a.client_id.localeCompare(b.client_id);
+        });
         expect(ApplicationInfos).toStrictEqual(Expect);
     });
 
