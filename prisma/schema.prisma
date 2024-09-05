@@ -45,14 +45,14 @@ model accesstoken {
     Token String @db.VarChar(128) @unique @id
     VirtualID String @db.VarChar(36)
     Scopes String @db.Text
-    ExpiredAt DateTime @db.DateTime()
-    VirutalID virtualid @relation(fields: [VirtualID], references: [VirtualID])
+    ExpiresAt DateTime @db.DateTime()
+    VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID])
 }
 
 model refreshtoken {
     Token String @db.VarChar(128) @unique @id
     VirtualID String @db.VarChar(36)
     Scopes String @db.Text
-    ExpiredAt DateTime @db.DateTime()
-    VirutalID virtualid @relation(fields: [VirtualID], references: [VirtualID])
+    ExpiresAt DateTime @db.DateTime()
+    VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID])
 }

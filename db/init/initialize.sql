@@ -38,7 +38,7 @@ CREATE TABLE `accesstoken` (
     `Token` VARCHAR(128) NOT NULL,
     `VirtualID` VARCHAR(36) NOT NULL,
     `Scopes` TEXT NOT NULL,
-    `ExpiredAt` DATETIME NOT NULL,
+    `ExpiresAt` DATETIME NOT NULL,
 
     UNIQUE INDEX `accesstoken_Token_key`(`Token`),
     PRIMARY KEY (`Token`)
@@ -49,7 +49,7 @@ CREATE TABLE `refreshtoken` (
     `Token` VARCHAR(128) NOT NULL,
     `VirtualID` VARCHAR(36) NOT NULL,
     `Scopes` TEXT NOT NULL,
-    `ExpiredAt` DATETIME NOT NULL,
+    `ExpiresAt` DATETIME NOT NULL,
 
     UNIQUE INDEX `refreshtoken_Token_key`(`Token`),
     PRIMARY KEY (`Token`)
