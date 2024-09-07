@@ -40,7 +40,11 @@ export default class AccessTokenManager extends DatabaseConnector {
                 };
             });
     }
-    public async Check(TokenText: string, RequireScopes: string[], GetSystemID: boolean = false): Promise<string | null> {
+    public async Check(
+        TokenText: string,
+        RequireScopes: string[],
+        GetSystemID: boolean = false
+    ): Promise<string | null> {
         const TokenData = await this.mysql.findFirst({
             select: {
                 VirtualID: true,
@@ -50,7 +54,7 @@ export default class AccessTokenManager extends DatabaseConnector {
                     select: {
                         ID: GetSystemID,
                     },
-                }
+                },
             },
             where: { Token: ToHash(TokenText, 'hotel') },
         });
