@@ -22,7 +22,7 @@ export default class VirtualIDManager extends DatabaseConnector {
     private async CreateVirtualID(AppID: string, SystemID: string): Promise<string> {
         const VirtualID = CreateVirtualIDText();
         /* v8 ignore next */
-        if (await this.VirtualIDExists(VirtualID)) return await this.GetVirtualID(AppID, SystemID);
+        if (await this.VirtualIDExists(VirtualID)) return await this.CreateVirtualID(AppID, SystemID);
         await this.mysql.create({
             data: {
                 VirtualID: VirtualID,
