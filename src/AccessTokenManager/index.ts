@@ -10,6 +10,10 @@ export default class AccessTokenManager extends DatabaseConnector {
     constructor(private SupervisorScopeName: string) {
         super();
     }
+    /* v8 ignore next 3 */
+    [Symbol.asyncDispose]() {
+        return super[Symbol.asyncDispose]();
+    }
     private get mysql() {
         return this.DB.accesstoken;
     }
