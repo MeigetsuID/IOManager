@@ -14,10 +14,14 @@
     "pretest": "run-s start:container wait",
     "test": "jest",
     "posttest": "docker compose down",
-    "postinstall": "prisma generate",
+    "postinstall": "run-p generate build:release",
     "generate": "prisma generate",
     "start:container": "docker compose up -d",
-    "wait": "node ./DBWait.js"
+    "wait": "node ./DBWait.js",
+    "build": "tsc",
+    "postbuild": "node ./add-js-extension.js ./dist",
+    "build:release": "tsc -p tsconfig.release.json",
+    "postbuild:release": "node ./add-js-extension.js ./dist"
   },
   "repository": {
     "type": "git",
