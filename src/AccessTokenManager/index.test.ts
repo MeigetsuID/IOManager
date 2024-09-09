@@ -62,7 +62,7 @@ describe('Access Token Manager Test', () => {
             expect(Check).toBe(SystemID);
         });
 
-        test('Check Access Token/NG/Return Virtual ID', async () => {
+        test('Check Access Token/Scope NG/Return Virtual ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'application.read']);
             const TokenText = TokenInfo.token;
@@ -70,7 +70,7 @@ describe('Access Token Manager Test', () => {
             expect(Check).toBeNull();
         });
     
-        test('Check Access Token/NG/Return System ID', async () => {
+        test('Check Access Token/Scope NG/Return System ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'application.read']);
             const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
@@ -90,6 +90,30 @@ describe('Access Token Manager Test', () => {
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
             const Check = await AccessToken.Check(TokenInfo.token, [], true);
             expect(Check).toBe(SystemID);
+        });
+
+        test('Check Access Token/Invalid Token Text/Return Virtual ID', async () => {
+            const Check = await AccessToken.Check('NGToken', ['user.read', 'user.write']);
+            expect(Check).toBeNull();
+        });
+
+        test('Check Access Token/Invalid Token Text/Return System ID', async () => {
+            const Check = await AccessToken.Check('NGToken', ['user.read', 'user.write'], true);
+            expect(Check).toBeNull();
+        });
+
+        test('Check Access Token/Expired Token/Return Virtual ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], 0);
+            const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write']);
+            expect(Check).toBeNull();
+        });
+
+        test('Check Access Token/Expired Token/Return System ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], 0);
+            const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
+            expect(Check).toBeNull();
         });
 
         test('Revoke Access Token/OK', async () => {
