@@ -28,4 +28,20 @@ describe('Access Token Manager Test', () => {
             expires_at: new Date(FakeTime.getTime() + 10800000),
         });
     });
+
+    test('Check Access Token/Suervisor Cover Check/Return Virtual ID', async () => {
+        const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+        const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
+        const TokenText = TokenInfo.token;
+        const Check = await AccessToken.Check(TokenText, ['user.read', 'user.write']);
+        expect(Check).toBe(VID);
+    });
+
+    test('Check Access Token/Suervisor Cover Check/Return System ID', async () => {
+        const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+        const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
+        const TokenText = TokenInfo.token;
+        const Check = await AccessToken.Check(TokenText, ['user.read', 'user.write'], true);
+        expect(Check).toBe(SystemID);
+    });
 });
