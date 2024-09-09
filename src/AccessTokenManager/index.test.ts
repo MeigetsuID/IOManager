@@ -25,7 +25,7 @@ describe('Access Token Manager Test', () => {
         const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
         expect(TokenInfo).toStrictEqual({
             Token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-            Expires: new Date(FakeTime.getTime() + 3600000),
+            Expires: new Date(FakeTime.getTime() + 10800000),
         });
     });
 });
