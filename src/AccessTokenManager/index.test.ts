@@ -40,8 +40,7 @@ describe('Access Token Manager Test', () => {
     test('Check Access Token/Suervisor Cover Check/Return System ID', async () => {
         const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
         const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
-        const TokenText = TokenInfo.token;
-        const Check = await AccessToken.Check(TokenText, ['user.read', 'user.write'], true);
+        const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
         expect(Check).toBe(SystemID);
     });
 });
