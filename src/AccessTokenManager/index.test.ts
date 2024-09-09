@@ -46,5 +46,20 @@ describe('Access Token Manager Test', () => {
             const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
             expect(Check).toBe(SystemID);
         });
+
+        test('Check Access Token/No Scope Reserve/Return Virtual ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
+            const TokenText = TokenInfo.token;
+            const Check = await AccessToken.Check(TokenText, []);
+            expect(Check).toBe(VID);
+        });
+    
+        test('Check Access Token/No Scope Reserve/Return System ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
+            const Check = await AccessToken.Check(TokenInfo.token, [], true);
+            expect(Check).toBe(SystemID);
+        });
     });
 });
