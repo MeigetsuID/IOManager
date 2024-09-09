@@ -49,7 +49,7 @@ export default class AccessTokenManager extends DatabaseConnector {
         RequireScopes: string[],
         GetSystemID: boolean = false
     ): Promise<string | null> {
-        const TokenData = await this.mysql.findFirst({
+        const TokenData = await this.mysql.findUnique({
             select: {
                 VirtualID: true,
                 Scopes: true,
