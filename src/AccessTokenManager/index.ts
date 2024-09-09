@@ -67,7 +67,7 @@ export default class AccessTokenManager extends DatabaseConnector {
         if (RequireScopes.length > 0) {
             if (TokenData.Scopes === this.SupervisorScopeName) return RetID;
             const Scopes = TokenData.Scopes.split(',');
-            return RequireScopes.some(scope => Scopes.includes(scope)) ? RetID : null;
+            return RequireScopes.every(scope => Scopes.includes(scope)) ? RetID : null;
         }
         return RetID;
     }
