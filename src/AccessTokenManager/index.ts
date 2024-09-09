@@ -56,7 +56,7 @@ export default class AccessTokenManager extends DatabaseConnector {
                 ExpiresAt: true,
                 VirutalIDTable: {
                     select: {
-                        ID: GetSystemID,
+                        ID: true,
                     },
                 },
             },
