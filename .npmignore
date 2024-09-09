@@ -128,9 +128,6 @@ out
 # prisma
 migrations/
 
-# Meigetsu ID Cache Data
-system/**/*.dat
-
 # Unused files
 Docker/
 coverage/
@@ -142,5 +139,10 @@ docker-compose.yaml
 prisma/migrations/
 ForTest/
 *.ts
+!*.d.ts
 tsconfig*json
 *.js.map
+DBWait.js
+add-js-extension.js
+system/
+db/

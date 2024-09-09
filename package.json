@@ -14,6 +14,7 @@
     "coverage": "jest --coverage",
     "pretest": "run-s start:container wait",
     "test": "jest",
+    "prepack": "run-s build:release",
     "posttest": "docker compose down",
     "postinstall": "run-p generate build:release",
     "generate": "prisma generate",
