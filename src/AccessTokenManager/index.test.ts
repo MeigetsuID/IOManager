@@ -47,6 +47,36 @@ describe('Access Token Manager Test', () => {
             expect(Check).toBe(SystemID);
         });
 
+        test('Check Access Token/OK/Return Virtual ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'user.write', 'application.read', 'application.write']);
+            const TokenText = TokenInfo.token;
+            const Check = await AccessToken.Check(TokenText, ['user.read', 'user.write']);
+            expect(Check).toBe(VID);
+        });
+    
+        test('Check Access Token/OK/Return System ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'user.write', 'application.read', 'application.write']);
+            const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
+            expect(Check).toBe(SystemID);
+        });
+
+        test('Check Access Token/NG/Return Virtual ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'application.read']);
+            const TokenText = TokenInfo.token;
+            const Check = await AccessToken.Check(TokenText, ['user.read', 'user.write']);
+            expect(Check).toBeNull();
+        });
+    
+        test('Check Access Token/NG/Return System ID', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['user.read', 'application.read']);
+            const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
+            expect(Check).toBeNull();
+        });
+
         test('Check Access Token/No Scope Reserve/Return Virtual ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
