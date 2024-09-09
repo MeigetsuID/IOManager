@@ -15,10 +15,10 @@ describe('Access Token Manager Test', () => {
     const AccessToken = new AccessTokenManager('supervisor');
     const VirtualID = new VirtualIDManager();
     beforeAll(() => {
-        Date.now = jest.fn(() => FakeTime.getTime());
+        jest.useFakeTimers({ now: FakeTime.getTime() });
     });
     afterAll(() => {
-        Date.now = Date.now.bind(globalThis);
+        jest.useRealTimers();
     });
     test('Create Access Token', async () => {
         const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
