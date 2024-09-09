@@ -17,8 +17,8 @@ export default class AccessTokenManager extends DatabaseConnector {
     private get mysql() {
         return this.DB.accesstoken;
     }
-    private async TokenExists(TokenText: string): Promise<boolean> {
-        return await this.mysql.count({ where: { Token: TokenText } }).then(cnt => cnt > 0);
+    private async TokenExists(HashedTokenText: string): Promise<boolean> {
+        return await this.mysql.count({ where: { Token: HashedTokenText } }).then(cnt => cnt > 0);
     }
     public async CreateAccessToken(
         VirtualID: string,
@@ -26,12 +26,13 @@ export default class AccessTokenManager extends DatabaseConnector {
         TokenExpireMin: number = 180
     ): Promise<{ token: string; expires_at: Date }> {
         const TokenText = CreateAccessTokenText();
+        const HashedTokenText = ToHash(TokenText, 'hotel');
         /* v8 ignore next */
-        if (await this.TokenExists(TokenText)) return await this.CreateAccessToken(VirtualID, Scopes, TokenExpireMin);
+        if (await this.TokenExists(HashedTokenText)) return await this.CreateAccessToken(VirtualID, Scopes, TokenExpireMin);
         return await this.mysql
             .create({
                 data: {
-                    Token: ToHash(TokenText, 'hotel'),
+                    Token: HashedTokenText,
                     VirtualID: VirtualID,
                     Scopes: Scopes.join(','),
                     ExpiresAt: new Date(Date.now() + TokenExpireMin * 60000),
@@ -72,8 +73,9 @@ export default class AccessTokenManager extends DatabaseConnector {
         return RetID;
     }
     public async Revoke(TokenText: string): Promise<boolean> {
-        if (!(await this.TokenExists(TokenText))) return false;
-        await this.mysql.delete({ where: { Token: ToHash(TokenText, 'hotel') } });
+        const HashedTokenText = ToHash(TokenText, 'hotel');
+        if (!(await this.TokenExists(HashedTokenText))) return false;
+        await this.mysql.delete({ where: { Token: HashedTokenText } });
         return true;
     }
 }
