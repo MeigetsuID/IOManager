@@ -91,5 +91,17 @@ describe('Access Token Manager Test', () => {
             const Check = await AccessToken.Check(TokenInfo.token, [], true);
             expect(Check).toBe(SystemID);
         });
+
+        test('Revoke Access Token/OK', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
+            const Revoke = await AccessToken.Revoke(TokenInfo.token);
+            expect(Revoke).toBe(true);
+        });
+
+        test('Revoke Access Token/NG', async () => {
+            const Revoke = await AccessToken.Revoke('NGToken');
+            expect(Revoke).toBe(false);
+        });
     });
 });
