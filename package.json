@@ -13,10 +13,10 @@
     "coverage": "jest --coverage",
     "pretest": "run-s start:container wait",
     "test": "jest",
-    "posttest": "docker-compose down",
+    "posttest": "docker compose down",
     "postinstall": "prisma generate",
     "generate": "prisma generate",
-    "start:container": "docker-compose up -d",
+    "start:container": "docker compose up -d",
     "wait": "node ./DBWait.js"
   },
   "repository": {
