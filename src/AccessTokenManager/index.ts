@@ -62,7 +62,7 @@ export default class AccessTokenManager extends DatabaseConnector {
             },
             where: { Token: ToHash(TokenText, 'hotel') },
         });
-        if (!TokenData || TokenData.ExpiresAt < new Date()) return null;
+        if (!TokenData || TokenData.ExpiresAt.getTime() < Date.now()) return null;
         const RetID = GetSystemID ? TokenData.VirutalIDTable.ID : TokenData.VirtualID;
         if (RequireScopes.length > 0) {
             if (TokenData.Scopes === this.SupervisorScopeName) return RetID;
