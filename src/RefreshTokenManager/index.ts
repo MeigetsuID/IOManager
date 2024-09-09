@@ -28,7 +28,8 @@ export default class RefreshTokenManager extends DatabaseConnector {
         const TokenText = CreateRefreshTokenText();
         const HashedTokenText = ToHash(TokenText, 'november');
         /* v8 ignore next */
-        if (await this.TokenExists(HashedTokenText)) return await this.CreateRefreshToken(VirtualID, Scopes, TokenExpireMin);
+        if (await this.TokenExists(HashedTokenText))
+            return await this.CreateRefreshToken(VirtualID, Scopes, TokenExpireMin);
         return await this.mysql
             .create({
                 data: {
@@ -45,9 +46,7 @@ export default class RefreshTokenManager extends DatabaseConnector {
                 };
             });
     }
-    public async Check(
-        TokenText: string
-    ): Promise<{ virtual_id: string, scopes: string[] } | null> {
+    public async Check(TokenText: string): Promise<{ virtual_id: string; scopes: string[] } | null> {
         const TokenData = await this.mysql.findUnique({
             select: {
                 VirtualID: true,
@@ -56,10 +55,9 @@ export default class RefreshTokenManager extends DatabaseConnector {
             },
             where: { Token: ToHash(TokenText, 'november') },
         });
-        return (TokenData && TokenData.ExpiresAt.getTime() >= Date.now()) 
+        return TokenData && TokenData.ExpiresAt.getTime() >= Date.now()
             ? { virtual_id: TokenData.VirtualID, scopes: TokenData.Scopes.split(',') }
-            : null
-        
+            : null;
     }
     public async Revoke(TokenText: string): Promise<boolean> {
         const HashedTokenText = ToHash(TokenText, 'november');
