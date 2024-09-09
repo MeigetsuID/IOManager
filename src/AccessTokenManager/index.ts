@@ -39,7 +39,7 @@ export default class AccessTokenManager extends DatabaseConnector {
             })
             .then(data => {
                 return {
-                    token: data.Token,
+                    token: TokenText,
                     expires_at: data.ExpiresAt,
                 };
             });
