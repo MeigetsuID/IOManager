@@ -24,8 +24,8 @@ describe('Access Token Manager Test', () => {
         const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
         const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
         expect(TokenInfo).toStrictEqual({
-            Token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-            Expires: new Date(FakeTime.getTime() + 10800000),
+            token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
+            expires_at: new Date(FakeTime.getTime() + 10800000),
         });
     });
 });
