@@ -20,7 +20,7 @@
     "coverage": "jest --coverage",
     "test": "jest",
     "prepack": "run-s build:release",
-    "postinstall": "run-p generate build:release",
+    "postinstall": "run-s generate",
     "generate": "prisma generate",
     "start:container": "docker compose up -d",
     "wait": "node ./DBWait.js",
