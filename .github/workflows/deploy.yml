@@ -18,6 +18,8 @@ jobs:
           scope: '@MeigetsuID'
       - name: Ready to run
         run: |
+          echo "@meigetsusoft:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
           npm ci
           npm run generate
       - name: Wait MariaDB running
