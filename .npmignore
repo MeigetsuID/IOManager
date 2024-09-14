@@ -129,6 +129,7 @@ out
 migrations/
 
 # Unused files
+.github/
 Docker/
 coverage/
 src/
