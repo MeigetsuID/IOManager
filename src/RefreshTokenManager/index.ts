@@ -27,8 +27,8 @@ export default class RefreshTokenManager extends DatabaseConnector {
     ): Promise<{ token: string; expires_at: Date }> {
         const TokenText = CreateRefreshTokenText();
         const HashedTokenText = ToHash(TokenText, 'november');
-        /* v8 ignore next */
         if (await this.TokenExists(HashedTokenText))
+            /* v8 ignore next */
             return await this.CreateRefreshToken(VirtualID, Scopes, TokenExpireMin);
         return await this.mysql
             .create({

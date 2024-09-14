@@ -27,8 +27,8 @@ export default class AccessTokenManager extends DatabaseConnector {
     ): Promise<{ token: string; expires_at: Date }> {
         const TokenText = CreateAccessTokenText();
         const HashedTokenText = ToHash(TokenText, 'hotel');
-        /* v8 ignore next */
         if (await this.TokenExists(HashedTokenText))
+            /* v8 ignore next */
             return await this.CreateAccessToken(VirtualID, Scopes, TokenExpireMin);
         return await this.mysql
             .create({
