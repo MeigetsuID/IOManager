@@ -1,9 +1,15 @@
 {
   "name": "@meigetsuid/iomanager",
   "version": "2.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "type": "module",
+  "main": "dist/cjs/index.js",
+  "types": "dist/@types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "engines": {
     "node": ">=21.0.0"
   },
@@ -20,8 +26,10 @@
     "wait": "node ./DBWait.js",
     "build": "tsc",
     "postbuild": "node ./add-js-extension.js ./dist",
-    "build:release": "tsc -p tsconfig.release.json",
-    "postbuild:release": "node ./add-js-extension.js ./dist"
+    "build:release": "run-p build:release:*",
+    "build:release:cjs": "tsc -p tsconfig.cjs.json",
+    "build:release:esm": "tsc -p tsconfig.esm.json",
+    "postbuild:release:esm": "node ./add-js-extension.js ./dist/esm"
   },
   "repository": {
     "type": "git",
