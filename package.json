@@ -44,7 +44,7 @@
   "description": "Meigetsu ID API Server IO Manager",
   "publishConfig": {
     "access": "restricted",
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/MeigetsuID"
   },
   "dependencies": {
     "@meigetsusoft/hash": "^1.0.0-patch01",
