@@ -32,6 +32,16 @@ describe('Refresh Token Manager Test', () => {
     });
 
     describe('No Time Mock', () => {
+        test('Create Refresh Token', async () => {
+            const Now = new Date();
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await RefreshToken.CreateRefreshToken(VID, ['supervisor'], Now);
+            expect(TokenInfo).toStrictEqual({
+                token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
+                expires_at: new Date(Math.trunc(Now.getTime() / 1000) * 1000 + 10080 * 60000),
+            });
+        });
+
         test('Check Refresh Token/OK', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await RefreshToken.CreateRefreshToken(VID, ['supervisor']);
@@ -46,7 +56,7 @@ describe('Refresh Token Manager Test', () => {
 
         test('Check Refresh Token/Expired Token', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
-            const TokenInfo = await RefreshToken.CreateRefreshToken(VID, ['supervisor'], 0);
+            const TokenInfo = await RefreshToken.CreateRefreshToken(VID, ['supervisor'], new Date(), 0);
             const Check = await RefreshToken.Check(TokenInfo.token);
             expect(Check).toBeNull();
         });

@@ -32,6 +32,16 @@ describe('Access Token Manager Test', () => {
     });
 
     describe('No Time Mock', () => {
+        test('Create Access Token', async () => {
+            const Now = new Date();
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], Now);
+            expect(TokenInfo).toStrictEqual({
+                token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
+                expires_at: new Date(Math.trunc(Now.getTime() / 1000) * 1000 + 10800000),
+            });
+        });
+
         test('Check Access Token/Suervisor Cover Check/Return Virtual ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor']);
@@ -110,14 +120,14 @@ describe('Access Token Manager Test', () => {
 
         test('Check Access Token/Expired Token/Return Virtual ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
-            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], 0);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], new Date(), 0);
             const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write']);
             expect(Check).toBeNull();
         });
 
         test('Check Access Token/Expired Token/Return System ID', async () => {
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
-            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], 0);
+            const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], new Date(), 0);
             const Check = await AccessToken.Check(TokenInfo.token, ['user.read', 'user.write'], true);
             expect(Check).toBeNull();
         });

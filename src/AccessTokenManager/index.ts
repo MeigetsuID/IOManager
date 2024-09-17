@@ -23,20 +23,21 @@ export default class AccessTokenManager extends DatabaseConnector {
     public async CreateAccessToken(
         VirtualID: string,
         Scopes: string[],
+        Now: Date = new Date(),
         TokenExpireMin: number = 180
     ): Promise<{ token: string; expires_at: Date }> {
         const TokenText = CreateAccessTokenText();
         const HashedTokenText = ToHash(TokenText, 'hotel');
         if (await this.TokenExists(HashedTokenText))
             /* v8 ignore next */
-            return await this.CreateAccessToken(VirtualID, Scopes, TokenExpireMin);
+            return await this.CreateAccessToken(VirtualID, Scopes, Now, TokenExpireMin);
         return await this.mysql
             .create({
                 data: {
                     Token: HashedTokenText,
                     VirtualID: VirtualID,
                     Scopes: Scopes.join(','),
-                    ExpiresAt: new Date(Date.now() + TokenExpireMin * 60000),
+                    ExpiresAt: new Date(Now.getTime() + TokenExpireMin * 60000),
                 },
             })
             .then(data => {

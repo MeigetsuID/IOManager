@@ -23,20 +23,21 @@ export default class RefreshTokenManager extends DatabaseConnector {
     public async CreateRefreshToken(
         VirtualID: string,
         Scopes: string[],
+        Now = new Date(),
         TokenExpireMin: number = 10080
     ): Promise<{ token: string; expires_at: Date }> {
         const TokenText = CreateRefreshTokenText();
         const HashedTokenText = ToHash(TokenText, 'november');
         if (await this.TokenExists(HashedTokenText))
             /* v8 ignore next */
-            return await this.CreateRefreshToken(VirtualID, Scopes, TokenExpireMin);
+            return await this.CreateRefreshToken(VirtualID, Scopes, Now, TokenExpireMin);
         return await this.mysql
             .create({
                 data: {
                     Token: HashedTokenText,
                     VirtualID: VirtualID,
                     Scopes: Scopes.join(','),
-                    ExpiresAt: new Date(Date.now() + TokenExpireMin * 60000),
+                    ExpiresAt: new Date(Now.getTime() + TokenExpireMin * 60000),
                 },
             })
             .then(data => {
