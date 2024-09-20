@@ -1,5 +1,5 @@
 import { existsSync, unlinkSync } from 'fs';
-import MailAddressEncryption from './MailAddressEncryption';
+import MailAddressEncryption from '.';
 
 test('Encryption Table Generation', () => {
     new MailAddressEncryption('./system/account/emailenc.test.csv');

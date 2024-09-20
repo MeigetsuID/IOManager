@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import DatabaseConnector from '../DatabaseConnector';
-import MailAddressEncryption from './MailAddressEncryption';
+import MailAddressEncryption from '../MailAddressEncryption';
 import { ToHash } from '@meigetsusoft/hash';
 
 export type CreateAccountArg = {
