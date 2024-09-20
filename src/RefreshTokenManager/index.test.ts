@@ -34,11 +34,12 @@ describe('Refresh Token Manager Test', () => {
     describe('No Time Mock', () => {
         test('Create Refresh Token', async () => {
             const Now = new Date();
+            Now.setMilliseconds(0);
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await RefreshToken.CreateRefreshToken(VID, ['supervisor'], Now);
             expect(TokenInfo).toStrictEqual({
                 token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-                expires_at: new Date(Math.trunc(Now.getTime() / 1000) * 1000 + 10080 * 60000),
+                expires_at: new Date(Now.getTime() + 10080 * 60000),
             });
         });
 

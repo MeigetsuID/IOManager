@@ -34,11 +34,12 @@ describe('Access Token Manager Test', () => {
     describe('No Time Mock', () => {
         test('Create Access Token', async () => {
             const Now = new Date();
+            Now.setMilliseconds(0);
             const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
             const TokenInfo = await AccessToken.CreateAccessToken(VID, ['supervisor'], Now);
             expect(TokenInfo).toStrictEqual({
                 token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-                expires_at: new Date(Math.trunc(Now.getTime() / 1000) * 1000 + 10800000),
+                expires_at: new Date(Now.getTime() + 10800000),
             });
         });
 
