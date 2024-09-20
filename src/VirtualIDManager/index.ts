@@ -1,6 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import DatabaseConnector from '../DatabaseConnector';
 
+export type VirtualIDLinkedInformation = {
+    app: string;
+    id: string;
+    user_id: string;
+    name: string;
+    mailaddress: string;
+    account_type: number;
+};
+
 export function CreateVirtualIDText(): string {
     return `vid-${uuidv4().replace(/-/g, '')}`;
 }
@@ -43,6 +52,35 @@ export default class VirtualIDManager extends DatabaseConnector {
             },
         });
         return Record.length === 1 ? Record[0].VirtualID : await this.CreateVirtualID(AppID, SystemID);
+    }
+    public async GetLinkedInformation(VirtualID: string): Promise<VirtualIDLinkedInformation | null> {
+        return await this.mysql.findUnique({
+            select: {
+                AppID: true,
+                ID: true,
+                Account: {
+                    select: {
+                        UserID: true,
+                        UserName: true,
+                        MailAddress: true,
+                        AccountType: true,
+                    },
+                }
+            },
+            where: {
+                VirtualID: VirtualID,
+            },
+        }).then(data => {
+            if (!data) return null;
+            return {
+                app: data.AppID,
+                id: data.ID,
+                user_id: data.Account.UserID,
+                name: data.Account.UserName,
+                mailaddress: data.Account.MailAddress,
+                account_type: data.Account.AccountType,
+            };
+        });
     }
     public async DeleteApp(AppID: string): Promise<boolean> {
         const CurrentVirtualIDCount = await this.mysql.count({ where: { AppID: AppID } });

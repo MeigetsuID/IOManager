@@ -1,5 +1,6 @@
 import VirtualIDManager, { CreateVirtualIDText } from '.';
 import { CreateAppID } from '../ApplicationManager';
+import { v4 as uuidv4 } from 'uuid';
 const SystemID = '4010404006753';
 
 describe('Virtual ID Manager Sub Module Test', () => {
@@ -16,6 +17,26 @@ describe('Virtual ID Manager Test', () => {
         expect(IssuedVirtualID).toMatch(/^vid-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
         const Result = await VirtualID.GetVirtualID(AppID, SystemID);
         expect(Result).toBe(IssuedVirtualID);
+    });
+
+    test('Get Linked Information/OK', async () => {
+        const AppID = CreateAppID();
+        const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
+        const Expected = {
+            app: AppID,
+            id: SystemID,
+            user_id: 'meigetsu2020',
+            name: '明月',
+            mailaddress: 'info@mail.meigetsu.jp',
+            account_type: 0,
+        };
+        const Result = await VirtualID.GetLinkedInformation(IssuedVirtualID);
+        expect(Result).toStrictEqual(Expected);
+    });
+
+    test('Get Linked Information/Not Found', async () => {
+        const Result = await VirtualID.GetLinkedInformation(`vid-${uuidv4().replace(/-/g, '')}`);
+        expect(Result).toBe(null);
     });
 
     test('Delete App', async () => {
