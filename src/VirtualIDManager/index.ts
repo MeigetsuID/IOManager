@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import DatabaseConnector from '../DatabaseConnector';
+import MailAddressEncryption from '../MailAddressEncryption';
 
 export type VirtualIDLinkedInformation = {
     app: string;
@@ -15,8 +16,10 @@ export function CreateVirtualIDText(): string {
 }
 
 export default class VirtualIDManager extends DatabaseConnector {
+    private MailEnc: MailAddressEncryption;
     constructor() {
         super();
+        this.MailEnc = new MailAddressEncryption();
     }
     /* v8 ignore next 3 */
     [Symbol.asyncDispose]() {
@@ -77,7 +80,7 @@ export default class VirtualIDManager extends DatabaseConnector {
                 id: data.ID,
                 user_id: data.Account.UserID,
                 name: data.Account.UserName,
-                mailaddress: data.Account.MailAddress,
+                mailaddress: this.MailEnc.decrypt(data.Account.MailAddress),
                 account_type: data.Account.AccountType,
             };
         });
