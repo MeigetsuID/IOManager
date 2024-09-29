@@ -34,25 +34,17 @@ CREATE TABLE `virtualid` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `accesstoken` (
-    `Token` VARCHAR(128) NOT NULL,
+CREATE TABLE `token` (
+    `AccessToken` VARCHAR(128) NOT NULL,
+    `RefreshToken` VARCHAR(128) NOT NULL,
     `VirtualID` VARCHAR(36) NOT NULL,
     `Scopes` TEXT NOT NULL,
-    `ExpiresAt` DATETIME NOT NULL,
+    `AExpiresAt` DATETIME NOT NULL,
+    `RExpiresAt` DATETIME NOT NULL,
 
-    UNIQUE INDEX `accesstoken_Token_key`(`Token`),
-    PRIMARY KEY (`Token`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `refreshtoken` (
-    `Token` VARCHAR(128) NOT NULL,
-    `VirtualID` VARCHAR(36) NOT NULL,
-    `Scopes` TEXT NOT NULL,
-    `ExpiresAt` DATETIME NOT NULL,
-
-    UNIQUE INDEX `refreshtoken_Token_key`(`Token`),
-    PRIMARY KEY (`Token`)
+    UNIQUE INDEX `token_AccessToken_key`(`AccessToken`),
+    UNIQUE INDEX `token_RefreshToken_key`(`RefreshToken`),
+    PRIMARY KEY (`AccessToken`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -62,10 +54,7 @@ ALTER TABLE `application` ADD CONSTRAINT `application_DeveloperID_fkey` FOREIGN 
 ALTER TABLE `virtualid` ADD CONSTRAINT `virtualid_ID_fkey` FOREIGN KEY (`ID`) REFERENCES `masteruserrecord`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `accesstoken` ADD CONSTRAINT `accesstoken_VirtualID_fkey` FOREIGN KEY (`VirtualID`) REFERENCES `virtualid`(`VirtualID`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `refreshtoken` ADD CONSTRAINT `refreshtoken_VirtualID_fkey` FOREIGN KEY (`VirtualID`) REFERENCES `virtualid`(`VirtualID`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `token` ADD CONSTRAINT `token_VirtualID_fkey` FOREIGN KEY (`VirtualID`) REFERENCES `virtualid`(`VirtualID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON meigetsuid.* TO mgidsrv;
 
@@ -80,5 +69,3 @@ INSERT INTO masteruserrecord (ID, UserID, UserName, MailAddress, Password, Accou
 INSERT INTO masteruserrecord (ID, UserID, UserName, MailAddress, Password, AccountType) VALUES ('3010404006753', 'vidmgrtest1', '仮想ＩＤマネージャーテスト用アカウント', '391b9a6622fe9bf057bd7c4e9ae055cc72bc667b738f3ce6e571b565682768084a7303dbe41800ea70c7030bc51c7d40349a20c9304015d17e473e0520fd8b6d818444b5123b930f6dbc1cd186fcd30aa8decac9b9a479c397a6a622a59cf9b900572fccf4db84e9c81716467fb1aa4262c331bd53ac7ba6b0b621bb035769189de7269c39eb477a585b031c2947f0c6d04c42969d5dfb957a82efdacf30daf0912c7177072e1458af8d86648be406a11345f52031f51e84760fac7e138774ec', 'A5AA9BC17006B56277A40890A058C9229DE6544C', 0);
 
 INSERT INTO masteruserrecord (ID, UserID, UserName, MailAddress, Password, AccountType) VALUES ('2010404006753', 'atmgrtest1', 'アクセストークンマネージャーテスト用アカウント', '391b9a6622fe9bf057bd7c4e9ae055cc72bc667b738f3ce6e571b565682768084a7303dbe41800ea70c7030bc51c7d40349a20c9304015d17e473e0520fd8b6d818444b5123b930f6dbc1cd186fcd30aa8decac9b9a479c397a6a622a59cf9b900572fccf4db84e9c81716467fb1aa4262c331bd53ac7ba6b0b621bb035769189de7269c39eb477a585b031c2947f0c6d04c42969d5dfb957a82efdacf30daf0912c7177072e1458af8d86648be406a11345f52031f51e84760fac7e138774ec', 'A5AA9BC17006B56277A40890A058C9229DE6544C', 0);
-
-INSERT INTO masteruserrecord (ID, UserID, UserName, MailAddress, Password, AccountType) VALUES ('1010404006753', 'rtmgrtest1', 'リフレッシュトークンマネージャーテスト用アカウント', '391b9a6622fe9bf057bd7c4e9ae055cc72bc667b738f3ce6e571b565682768084a7303dbe41800ea70c7030bc51c7d40349a20c9304015d17e473e0520fd8b6d818444b5123b930f6dbc1cd186fcd30aa8decac9b9a479c397a6a622a59cf9b900572fccf4db84e9c81716467fb1aa4262c331bd53ac7ba6b0b621bb035769189de7269c39eb477a585b031c2947f0c6d04c42969d5dfb957a82efdacf30daf0912c7177072e1458af8d86648be406a11345f52031f51e84760fac7e138774ec', 'A5AA9BC17006B56277A40890A058C9229DE6544C', 0);

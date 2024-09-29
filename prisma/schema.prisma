@@ -37,22 +37,15 @@ model virtualid {
     ID String @db.VarChar(13)
     AppID String @db.VarChar(36)
     Account masteruserrecord @relation(fields: [ID], references: [ID])
-    AccessToken accesstoken[]
-    RefreshToken refreshtoken[]
+    Token token[]
 }
 
-model accesstoken {
-    Token String @db.VarChar(128) @unique @id
+model token {
+    AccessToken String @db.VarChar(128) @unique @id
+    RefreshToken String @db.VarChar(128) @unique
     VirtualID String @db.VarChar(36)
     Scopes String @db.Text
-    ExpiresAt DateTime @db.DateTime()
-    VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID])
-}
-
-model refreshtoken {
-    Token String @db.VarChar(128) @unique @id
-    VirtualID String @db.VarChar(36)
-    Scopes String @db.Text
-    ExpiresAt DateTime @db.DateTime()
+    AExpiresAt DateTime @db.DateTime()
+    RExpiresAt DateTime @db.DateTime()
     VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID])
 }
