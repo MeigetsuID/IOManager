@@ -117,6 +117,8 @@ describe('Token Manager Test', () => {
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
             const Revoke = await Token.Revoke(TokenInfo.access_token);
             expect(Revoke).toBe(true);
+            const RefreshResult = await Token.Refresh(TokenInfo.refresh_token);
+            expect(RefreshResult).toBeNull();
         });
     
         test('NG', async () => {
