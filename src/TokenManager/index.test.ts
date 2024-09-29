@@ -126,4 +126,15 @@ describe('Token Manager Test', () => {
             expect(Revoke).toBe(false);
         });
     });
+
+    describe('Expired Token All Remove', () => {
+        test('10 Token Check', async () => {
+            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const CreateExpiredTokens = [...Array(10)].map(() => Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 }));
+            const TokenRecords = await Promise.all(CreateExpiredTokens);
+            await Token.RemoveExpiredTokens();
+            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
+        });
+    });
 });

@@ -136,4 +136,13 @@ export default class TokenManager extends DatabaseConnector {
         await this.mysql.delete({ where: { AccessToken: ToHash(AccessToken, 'hotel') } });
         return true;
     }
+    public async RemoveExpiredTokens(): Promise<void> {
+        await this.mysql.deleteMany({
+            where: {
+                RExpiresAt: {
+                    lte: new Date(),
+                },
+            },
+        });
+    }
 }
