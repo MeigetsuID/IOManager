@@ -47,7 +47,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "@meigetsusoft/hash": "^1.0.0-patch01",
+    "@meigetsusoft/hash": "^1.0.0-patch02",
     "@prisma/client": "^5.17.0",
     "nodeeasyfileio": "^1.0.3",
     "randomstring": "^1.3.0",
