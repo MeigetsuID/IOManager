@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: '21.x'
           cache: npm
-          scope: '@MeigetsuID'
+          scope: '@meigetsuid'
       - name: Ready to run
         run: npm ci
       - name: Publish
