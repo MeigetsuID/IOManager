@@ -14,7 +14,7 @@ describe('Token Manager Test', () => {
     const Token = new TokenManager('supervisor');
     const VirtualID = new VirtualIDManager();
     const AppMgr = new ApplicationManager();
-    let AppID = ''
+    let AppID = '';
     beforeAll(async () => {
         await AppMgr.CreateApp(SystemID, {
             name: 'TestApp',
@@ -26,7 +26,6 @@ describe('Token Manager Test', () => {
         }).then(data => {
             AppID = data.client_id;
         });
-
     });
     test('Create Token', async () => {
         const Now = new Date();
@@ -125,7 +124,7 @@ describe('Token Manager Test', () => {
             expect(RefreshResult).toBeNull();
         });
     });
-    
+
     describe('Revoke Token', () => {
         test('OK', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
@@ -135,7 +134,7 @@ describe('Token Manager Test', () => {
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token);
             expect(RefreshResult).toBeNull();
         });
-    
+
         test('NG', async () => {
             const Revoke = await Token.Revoke('NGToken');
             expect(Revoke).toBe(false);
@@ -145,7 +144,9 @@ describe('Token Manager Test', () => {
     describe('Expired Token All Remove', () => {
         test('10 Token Check', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
-            const CreateExpiredTokens = [...Array(10)].map(() => Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 }));
+            const CreateExpiredTokens = [...Array(10)].map(() =>
+                Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 })
+            );
             const TokenRecords = await Promise.all(CreateExpiredTokens);
             await Token.RemoveExpiredTokens();
             const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
