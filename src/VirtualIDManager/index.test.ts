@@ -1,5 +1,5 @@
 import VirtualIDManager, { CreateVirtualIDText } from '.';
-import { CreateAppID } from '../ApplicationManager';
+import ApplicationManager from '../ApplicationManager';
 import { v4 as uuidv4 } from 'uuid';
 const SystemID = '4010404006753';
 
@@ -11,8 +11,21 @@ describe('Virtual ID Manager Sub Module Test', () => {
 
 describe('Virtual ID Manager Test', () => {
     const VirtualID = new VirtualIDManager();
+    const AppMgr = new ApplicationManager();
+    let AppID = '';
+    beforeAll(async () => {
+        await AppMgr.CreateApp(SystemID, {
+            name: 'TestApp',
+            description: 'Test Application',
+            redirect_uri: ['http://localhost'],
+            privacy_policy: 'http://localhost/privacy',
+            terms_of_service: 'http://localhost/terms',
+            public: false,
+        }).then(data => {
+            AppID = data.client_id;
+        });
+    });
     test('Get Virtual ID', async () => {
-        const AppID = CreateAppID();
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
         expect(IssuedVirtualID).toMatch(/^vid-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
         const Result = await VirtualID.GetVirtualID(AppID, SystemID);
@@ -20,7 +33,6 @@ describe('Virtual ID Manager Test', () => {
     });
 
     test('Get Linked Information/OK', async () => {
-        const AppID = CreateAppID();
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
         const Expected = {
             app: AppID,
@@ -40,7 +52,6 @@ describe('Virtual ID Manager Test', () => {
     });
 
     test('Delete App', async () => {
-        const AppID = CreateAppID();
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
         const Result = await VirtualID.DeleteApp(AppID);
         expect(Result).toBe(true);
@@ -49,7 +60,6 @@ describe('Virtual ID Manager Test', () => {
     });
 
     test('Delete Account', async () => {
-        const AppID = CreateAppID();
         const DelTestSystemID = '3010404006753';
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, DelTestSystemID);
         const Result = await VirtualID.DeleteAccount(DelTestSystemID);
