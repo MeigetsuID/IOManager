@@ -51,6 +51,23 @@ describe('Virtual ID Manager Test', () => {
         expect(Result).toBe(null);
     });
 
+    test('Get All Virtual ID/From System ID', async () => {
+        const Apps = [...Array(10)].map(() =>
+            AppMgr.CreateApp(SystemID, {
+                name: 'TestApp',
+                description: 'Test Application',
+                redirect_uri: ['http://localhost'],
+                privacy_policy: 'http://localhost/privacy',
+                terms_of_service: 'http://localhost/terms',
+                public: false,
+            })
+        );
+        const AppIDs = await Promise.all(Apps).then(data => data.map(app => app.client_id));
+        const VirtualIDs = await Promise.all(AppIDs.map(app => VirtualID.GetVirtualID(app, '3010404006752')));
+        const Result = await VirtualID.GetAllVirtualIDBySystemID('3010404006752');
+        expect(Result.sort()).toStrictEqual(VirtualIDs.sort());
+    });
+
     test('Delete App', async () => {
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
         const Result = await VirtualID.DeleteApp(AppID);
