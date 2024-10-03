@@ -1,6 +1,9 @@
+import { generate } from 'randomstring';
 import VirtualIDManager, { CreateVirtualIDText } from '.';
+import AccountManager from '../AccountManager';
 import ApplicationManager from '../ApplicationManager';
 import { v4 as uuidv4 } from 'uuid';
+import CreateID from '@meigetsuid/idgenerator';
 const SystemID = '4010404006753';
 
 describe('Virtual ID Manager Sub Module Test', () => {
@@ -66,6 +69,34 @@ describe('Virtual ID Manager Test', () => {
         const VirtualIDs = await Promise.all(AppIDs.map(app => VirtualID.GetVirtualID(app, '3010404006752')));
         const Result = await VirtualID.GetAllVirtualIDBySystemID('3010404006752');
         expect(Result.sort()).toStrictEqual(VirtualIDs.sort());
+    });
+
+    test('Get All Virtual ID/From App ID', async () => {
+        const AccountMgr = new AccountManager();
+        const AppInfo = await AppMgr.CreateApp(SystemID, {
+            name: 'TestApp',
+            description: 'Test Application',
+            redirect_uri: ['http://localhost'],
+            privacy_policy: 'http://localhost/privacy',
+            terms_of_service: 'http://localhost/terms',
+            public: false,
+        });
+        const CreateVIDs = [...Array(10)].map(async () => {
+            const UserID = generate({ length: 20, charset: 'alphanumeric' });
+            const GeneratedSystemID = await CreateID(UserID);
+            await AccountMgr.CreateAccount({
+                id: GeneratedSystemID,
+                user_id: UserID,
+                name: '仮想IDマネージャーテスト',
+                mailaddress: `${generate({ length: 10, charset: 'alphanumeric' })}@mail.meigetsu.jp`,
+                password: generate({ length: 20, charset: 'alphanumeric' }),
+                account_type: 0,
+            });
+            return await VirtualID.GetVirtualID(AppInfo.client_id, GeneratedSystemID);
+        });
+        const VIDs = await Promise.all(CreateVIDs);
+        const Result = await VirtualID.GetAllVirtualIDByAppID(AppInfo.client_id);
+        expect(Result.sort()).toStrictEqual(VIDs.sort());
     });
 
     test('Delete App', async () => {

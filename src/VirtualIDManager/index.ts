@@ -99,6 +99,18 @@ export default class VirtualIDManager extends DatabaseConnector {
             })
             .then(data => data.map(val => val.VirtualID));
     }
+    public async GetAllVirtualIDByAppID(AppID: string): Promise<string[]> {
+        return await this.mysql
+            .findMany({
+                select: {
+                    VirtualID: true,
+                },
+                where: {
+                    AppID: AppID,
+                },
+            })
+            .then(data => data.map(val => val.VirtualID));
+    }
     public async DeleteApp(AppID: string): Promise<boolean> {
         const CurrentVirtualIDCount = await this.mysql.count({ where: { AppID: AppID } });
         return await this.mysql
