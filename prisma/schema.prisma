@@ -30,6 +30,7 @@ model application {
     AppName String @db.Text
     DeveloperID String @db.VarChar(13)
     Account masteruserrecord @relation(fields: [DeveloperID], references: [ID])
+    VirtualIDs virtualid[]
 }
 
 model virtualid {
@@ -37,6 +38,7 @@ model virtualid {
     ID String @db.VarChar(13)
     AppID String @db.VarChar(36)
     Account masteruserrecord @relation(fields: [ID], references: [ID])
+    Application application @relation(fields: [AppID], references: [AppID])
     Token token[]
 }
 

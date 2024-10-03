@@ -54,6 +54,9 @@ ALTER TABLE `application` ADD CONSTRAINT `application_DeveloperID_fkey` FOREIGN 
 ALTER TABLE `virtualid` ADD CONSTRAINT `virtualid_ID_fkey` FOREIGN KEY (`ID`) REFERENCES `masteruserrecord`(`ID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `virtualid` ADD CONSTRAINT `virtualid_AppID_fkey` FOREIGN KEY (`AppID`) REFERENCES `application`(`AppID`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `token` ADD CONSTRAINT `token_VirtualID_fkey` FOREIGN KEY (`VirtualID`) REFERENCES `virtualid`(`VirtualID`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON meigetsuid.* TO mgidsrv;
