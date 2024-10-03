@@ -1,5 +1,5 @@
 import TokenManager, { CreateTokenText } from '.';
-import { CreateAppID } from '../ApplicationManager';
+import ApplicationManager from '../ApplicationManager';
 import VirtualIDManager from '../VirtualIDManager';
 const SystemID = '2010404006753';
 
@@ -13,10 +13,25 @@ describe('Access Token Manager Sub Module Test', () => {
 describe('Token Manager Test', () => {
     const Token = new TokenManager('supervisor');
     const VirtualID = new VirtualIDManager();
+    const AppMgr = new ApplicationManager();
+    let AppID = ''
+    beforeAll(async () => {
+        await AppMgr.CreateApp(SystemID, {
+            name: 'TestApp',
+            description: 'Test Application',
+            redirect_uri: ['http://localhost'],
+            privacy_policy: 'http://localhost/privacy',
+            terms_of_service: 'http://localhost/terms',
+            public: false,
+        }).then(data => {
+            AppID = data.client_id;
+        });
+
+    });
     test('Create Token', async () => {
         const Now = new Date();
         Now.setMilliseconds(0);
-        const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+        const VID = await VirtualID.GetVirtualID(AppID, SystemID);
         const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now);
         expect(TokenInfo).toStrictEqual({
             token_type: 'Bearer',
@@ -30,14 +45,14 @@ describe('Token Manager Test', () => {
     });
     describe('Check Access Token', () => {
         test('Supervisor Cover Check', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBe(VID);
         });
 
         test('OK', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, [
                 'user.read',
                 'user.write',
@@ -49,14 +64,14 @@ describe('Token Manager Test', () => {
         });
 
         test('Scope NG', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['user.read', 'application.read']);
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBeNull();
         });
 
         test('No Scope Reserve', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
             const Check = await Token.Check(TokenInfo.access_token, []);
             expect(Check).toBe(VID);
@@ -68,7 +83,7 @@ describe('Token Manager Test', () => {
         });
 
         test('Expired Token', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], new Date(), { access_token: -1 });
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBeNull();
@@ -79,7 +94,7 @@ describe('Token Manager Test', () => {
         test('OK', async () => {
             const Now = new Date();
             Now.setMilliseconds(0);
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now);
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token, Now);
             if (!RefreshResult) throw new Error('Refresh Failed');
@@ -99,7 +114,7 @@ describe('Token Manager Test', () => {
         test('Expired Token', async () => {
             const Now = new Date();
             Now.setMilliseconds(0);
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now, { refresh_token: -1 });
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token, Now);
             expect(RefreshResult).toBeNull();
@@ -113,7 +128,7 @@ describe('Token Manager Test', () => {
     
     describe('Revoke Token', () => {
         test('OK', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
             const Revoke = await Token.Revoke(TokenInfo.access_token);
             expect(Revoke).toBe(true);
@@ -129,7 +144,7 @@ describe('Token Manager Test', () => {
 
     describe('Expired Token All Remove', () => {
         test('10 Token Check', async () => {
-            const VID = await VirtualID.GetVirtualID(CreateAppID(), SystemID);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             const CreateExpiredTokens = [...Array(10)].map(() => Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 }));
             const TokenRecords = await Promise.all(CreateExpiredTokens);
             await Token.RemoveExpiredTokens();
