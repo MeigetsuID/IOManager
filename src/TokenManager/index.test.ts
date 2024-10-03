@@ -1,6 +1,9 @@
+import CreateID from '@meigetsuid/idgenerator';
 import TokenManager, { CreateTokenText } from '.';
+import AccountManager from '../AccountManager';
 import ApplicationManager from '../ApplicationManager';
-import VirtualIDManager from '../VirtualIDManager';
+import VirtualIDManager, { CreateVirtualIDText } from '../VirtualIDManager';
+import { generate } from 'randomstring';
 const SystemID = '2010404006753';
 
 describe('Access Token Manager Sub Module Test', () => {
@@ -138,6 +141,62 @@ describe('Token Manager Test', () => {
         test('NG', async () => {
             const Revoke = await Token.Revoke('NGToken');
             expect(Revoke).toBe(false);
+        });
+    });
+
+    describe('Revoke All', () => {
+        test('Single Virtual ID', async () => {
+            const App = await AppMgr.CreateApp(SystemID, {
+                name: 'TestApp',
+                description: 'Test Application',
+                redirect_uri: ['http://localhost'],
+                privacy_policy: 'http://localhost/privacy',
+                terms_of_service: 'http://localhost/terms',
+                public: false,
+            });
+            const VID = await VirtualID.GetVirtualID(App.client_id, SystemID);
+            const CreateTokens = [...Array(10)].map(() => Token.CreateToken(VID, ['supervisor']));
+            const TokenRecords = await Promise.all(CreateTokens);
+            const RevokeResult = await Token.RevokeAll(VID);
+            expect(RevokeResult).toBe(true);
+            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
+        });
+
+        test('Multiple Virtual ID', async () => {
+            const Account = new AccountManager();
+            const App = await AppMgr.CreateApp(SystemID, {
+                name: 'TestApp',
+                description: 'Test Application',
+                redirect_uri: ['http://localhost'],
+                privacy_policy: 'http://localhost/privacy',
+                terms_of_service: 'http://localhost/terms',
+                public: false,
+            });
+            const CreateVIDs = [...Array(10)].map(async () => {
+                const UserID = generate({ length: 20, charset: 'alphanumeric' });
+                const GeneratedSystemID = await CreateID(UserID);
+                await Account.CreateAccount({
+                    id: GeneratedSystemID,
+                    user_id: UserID,
+                    name: 'トークンマネージャーテスト',
+                    mailaddress: `${generate({ length: 10, charset: 'alphanumeric' })}@mail.meigetsu.jp`,
+                    password: generate({ length: 20, charset: 'alphanumeric' }),
+                    account_type: 0,
+                });
+                return await VirtualID.GetVirtualID(App.client_id, GeneratedSystemID);
+            });
+            const VirtualIDs = await Promise.all(CreateVIDs);
+            const CreateTokens = VirtualIDs.map(vid => Token.CreateToken(vid, ['supervisor']));
+            const TokenRecords = await Promise.all(CreateTokens);
+            const RevokeResult = await Token.RevokeAll(VirtualIDs);
+            expect(RevokeResult).toBe(true);
+            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
+        });
+
+        test('No Token', async () => {
+            expect(await Token.RevokeAll(CreateVirtualIDText())).toBe(false);
         });
     });
 
