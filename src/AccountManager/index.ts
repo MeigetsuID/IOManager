@@ -19,6 +19,7 @@ export type GetAccountRes = {
 };
 
 export type GetAccountResS = GetAccountRes & {
+    id: string;
     mailaddress: string;
 };
 
