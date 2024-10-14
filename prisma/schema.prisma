@@ -29,7 +29,7 @@ model application {
     AppID String @db.VarChar(36) @unique @id
     AppName String @db.Text
     DeveloperID String @db.VarChar(13)
-    Account masteruserrecord @relation(fields: [DeveloperID], references: [ID])
+    Account masteruserrecord @relation(fields: [DeveloperID], references: [ID], onUpdate: Cascade, onDelete: Cascade)
     VirtualIDs virtualid[]
 }
 
@@ -37,8 +37,8 @@ model virtualid {
     VirtualID String @db.VarChar(36) @unique @id
     ID String @db.VarChar(13)
     AppID String @db.VarChar(36)
-    Account masteruserrecord @relation(fields: [ID], references: [ID])
-    Application application @relation(fields: [AppID], references: [AppID])
+    Account masteruserrecord @relation(fields: [ID], references: [ID], onUpdate: Cascade, onDelete: Cascade)
+    Application application @relation(fields: [AppID], references: [AppID], onDelete: Cascade)
     Token token[]
 }
 
@@ -49,5 +49,5 @@ model token {
     Scopes String @db.Text
     AExpiresAt DateTime @db.DateTime()
     RExpiresAt DateTime @db.DateTime()
-    VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID])
+    VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID], onDelete: Cascade)
 }
