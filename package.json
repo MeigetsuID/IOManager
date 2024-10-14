@@ -1,6 +1,6 @@
 {
   "name": "@meigetsuid/iomanager",
-  "version": "2.1.5-patch01",
+  "version": "2.1.6",
   "type": "module",
   "main": "dist/cjs/index.js",
   "types": "dist/@types/index.d.ts",
