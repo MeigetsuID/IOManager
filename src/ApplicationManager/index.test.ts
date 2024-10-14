@@ -57,6 +57,18 @@ describe('Application Manager All Test', () => {
         expect(isValid(cAppIDSpec, ApplicationInfo)).toBe(true);
     });
 
+    test('Create Application/Developer Not Found', async () => {
+        const ApplicationInfo = await Application.CreateApp('4010404006754', {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        });
+        expect(ApplicationInfo).toBeNull();
+    });
+
     test('Get Application/OK', async () => {
         const AppBaseInfo = {
             name: 'Test Application',
@@ -67,6 +79,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const Expect = {
             client_id: AppIDAndSecret.client_id,
             name: 'Test Application',
@@ -161,9 +174,10 @@ describe('Application Manager All Test', () => {
             },
         ];
         const CreateApps = Apps.map(async app => {
-            const AppInfo = await Application.CreateApp('4010404006743', app);
+            const AppIDAndSecret = await Application.CreateApp('4010404006743', app);
+            if (!AppIDAndSecret) throw new Error('Developer is not found.');
             return {
-                client_id: AppInfo.client_id,
+                client_id: AppIDAndSecret.client_id,
                 name: app.name,
                 description: app.description,
                 redirect_uri: app.redirect_uri,
@@ -197,6 +211,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const Expect = {
             client_id: AppIDAndSecret.client_id,
             name: 'Test Application 2',
@@ -226,6 +241,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
             regenerate_secret: true,
             name: 'Test Application 2',
@@ -250,6 +266,7 @@ describe('Application Manager All Test', () => {
             public: true,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const Expect = {
             client_id: AppIDAndSecret.client_id,
             name: 'Test Application 2',
@@ -279,6 +296,7 @@ describe('Application Manager All Test', () => {
             public: true,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         await expect(
             Application.UpdateApp(AppIDAndSecret.client_id, {
                 regenerate_secret: true,
@@ -307,6 +325,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const GetResultBeforeDelete = await Application.GetApp(AppIDAndSecret.client_id);
         expect(GetResultBeforeDelete).toStrictEqual({
             client_id: AppIDAndSecret.client_id,
@@ -404,9 +423,10 @@ describe('Application Manager All Test', () => {
             },
         ];
         const CreateApps = Apps.map(async app => {
-            const AppInfo = await Application.CreateApp('4010404006723', app);
+            const AppIDAndSecret = await Application.CreateApp('4010404006723', app);
+            if (!AppIDAndSecret) throw new Error('Developer is not found.');
             return {
-                client_id: AppInfo.client_id,
+                client_id: AppIDAndSecret.client_id,
                 name: app.name,
                 description: app.description,
                 redirect_uri: app.redirect_uri,
@@ -440,6 +460,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
         const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret);
         expect(AuthRes).toBe(DeveloperID);
@@ -460,6 +481,7 @@ describe('Application Manager All Test', () => {
             public: false,
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
         const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, 'test');
         expect(AuthRes).toBe(null);
     });

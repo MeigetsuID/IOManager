@@ -27,54 +27,70 @@ describe('Token Manager Test', () => {
             terms_of_service: 'http://localhost/terms',
             public: false,
         }).then(data => {
+            if (!data) throw new Error('Developer is not found.');
             AppID = data.client_id;
         });
     });
-    test('Create Token', async () => {
-        const Now = new Date();
-        Now.setMilliseconds(0);
-        const VID = await VirtualID.GetVirtualID(AppID, SystemID);
-        const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now);
-        expect(TokenInfo).toStrictEqual({
-            token_type: 'Bearer',
-            access_token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-            refresh_token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
-            expires_at: {
-                access_token: new Date(Now.getTime() + 180 * 60000),
-                refresh_token: new Date(Now.getTime() + 10080 * 60000),
-            },
+    describe('Create Token', () => {
+        test('Create Token', async () => {
+            const Now = new Date();
+            Now.setMilliseconds(0);
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
+            const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now);
+            expect(TokenInfo).toStrictEqual({
+                token_type: 'Bearer',
+                access_token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
+                refresh_token: expect.stringMatching(/^[0-9a-zA-Z]{256}$/),
+                expires_at: {
+                    access_token: new Date(Now.getTime() + 180 * 60000),
+                    refresh_token: new Date(Now.getTime() + 10080 * 60000),
+                },
+            });
         });
-    });
+        test('Invalid Virtual ID', async () => {
+            const TokenInfo = await Token.CreateToken(CreateVirtualIDText(), ['supervisor']);
+            expect(TokenInfo).toBeNull();
+        });
+    })
     describe('Check Access Token', () => {
         test('Supervisor Cover Check', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBe(VID);
         });
 
         test('OK', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, [
                 'user.read',
                 'user.write',
                 'application.read',
                 'application.write',
             ]);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBe(VID);
         });
 
         test('Scope NG', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['user.read', 'application.read']);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBeNull();
         });
 
         test('No Scope Reserve', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Check = await Token.Check(TokenInfo.access_token, []);
             expect(Check).toBe(VID);
         });
@@ -86,7 +102,9 @@ describe('Token Manager Test', () => {
 
         test('Expired Token', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], new Date(), { access_token: -1 });
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write']);
             expect(Check).toBeNull();
         });
@@ -97,7 +115,9 @@ describe('Token Manager Test', () => {
             const Now = new Date();
             Now.setMilliseconds(0);
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token, Now);
             if (!RefreshResult) throw new Error('Refresh Failed');
             expect(RefreshResult).toStrictEqual({
@@ -117,7 +137,9 @@ describe('Token Manager Test', () => {
             const Now = new Date();
             Now.setMilliseconds(0);
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor'], Now, { refresh_token: -1 });
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token, Now);
             expect(RefreshResult).toBeNull();
         });
@@ -131,7 +153,9 @@ describe('Token Manager Test', () => {
     describe('Revoke Token', () => {
         test('OK', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const TokenInfo = await Token.CreateToken(VID, ['supervisor']);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
             const Revoke = await Token.Revoke(TokenInfo.access_token);
             expect(Revoke).toBe(true);
             const RefreshResult = await Token.Refresh(TokenInfo.refresh_token);
@@ -154,12 +178,17 @@ describe('Token Manager Test', () => {
                 terms_of_service: 'http://localhost/terms',
                 public: false,
             });
+            if (!App) throw new Error('Invalid Developer ID');
             const VID = await VirtualID.GetVirtualID(App.client_id, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
             const CreateTokens = [...Array(10)].map(() => Token.CreateToken(VID, ['supervisor']));
             const TokenRecords = await Promise.all(CreateTokens);
             const RevokeResult = await Token.RevokeAll(VID);
             expect(RevokeResult).toBe(true);
-            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            const CheckTokens = TokenRecords.map(token => {
+                if (!token) throw new Error('Invalid Virtual ID.');
+                return Token.Check(token.access_token, []);
+            });
             expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
         });
 
@@ -173,6 +202,7 @@ describe('Token Manager Test', () => {
                 terms_of_service: 'http://localhost/terms',
                 public: false,
             });
+            if (!App) throw new Error('Invalid Developer ID');
             const CreateVIDs = [...Array(10)].map(async () => {
                 const UserID = generate({ length: 20, charset: 'alphanumeric' });
                 const GeneratedSystemID = await CreateID(UserID);
@@ -187,11 +217,17 @@ describe('Token Manager Test', () => {
                 return await VirtualID.GetVirtualID(App.client_id, GeneratedSystemID);
             });
             const VirtualIDs = await Promise.all(CreateVIDs);
-            const CreateTokens = VirtualIDs.map(vid => Token.CreateToken(vid, ['supervisor']));
+            const CreateTokens = VirtualIDs.map(vid => {
+                if (!vid) throw new Error('Invalid AppID or SystemID.');
+                return Token.CreateToken(vid, ['supervisor'])
+            });
             const TokenRecords = await Promise.all(CreateTokens);
-            const RevokeResult = await Token.RevokeAll(VirtualIDs);
+            const RevokeResult = await Token.RevokeAll(VirtualIDs.filter(vid => vid !== null) as string[]);
             expect(RevokeResult).toBe(true);
-            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            const CheckTokens = TokenRecords.map(token => {
+                if (!token) throw new Error('Invalid Virtual ID.');
+                return Token.Check(token.access_token, []);
+            });
             expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
         });
 
@@ -203,12 +239,16 @@ describe('Token Manager Test', () => {
     describe('Expired Token All Remove', () => {
         test('10 Token Check', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
-            const CreateExpiredTokens = [...Array(10)].map(() =>
-                Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 })
-            );
+            const CreateExpiredTokens = [...Array(10)].map(() => {
+                if (!VID) throw new Error('Invalid AppID or SystemID.');
+                return Token.CreateToken(VID, ['supervisor'], new Date(), { refresh_token: -1 });
+            });
             const TokenRecords = await Promise.all(CreateExpiredTokens);
             await Token.RemoveExpiredTokens();
-            const CheckTokens = TokenRecords.map(token => Token.Check(token.access_token, []));
+            const CheckTokens = TokenRecords.map(token => {
+                if (!token) throw new Error('Invalid Virtual ID.');
+                return Token.Check(token.access_token, []);
+            });
             expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
         });
     });

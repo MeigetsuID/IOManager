@@ -56,7 +56,7 @@ export default class TokenManager extends DatabaseConnector {
         Scopes: string[],
         Now: Date = new Date(),
         TokenExpireMin: Partial<TokenExpiresMinInformation> = { access_token: 180, refresh_token: 10080 }
-    ): Promise<TokenResponse> {
+    ): Promise<TokenResponse | null> {
         const ExpiresMin = {
             access_token: TokenExpireMin.access_token || 180,
             refresh_token: TokenExpireMin.refresh_token || 10080,
@@ -68,6 +68,7 @@ export default class TokenManager extends DatabaseConnector {
         if (await this.TokenExists(TokenText.access_token, TokenText.refresh_token))
             /* v8 ignore next */
             return await this.CreateToken(VirtualID, Scopes, Now, TokenExpireMin);
+        if (await this.DB.virtualid.count({ where: { VirtualID: VirtualID } }).then(cnt => cnt === 0)) return null;
         return await this.mysql
             .create({
                 data: {

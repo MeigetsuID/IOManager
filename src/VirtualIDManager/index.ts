@@ -44,7 +44,12 @@ export default class VirtualIDManager extends DatabaseConnector {
         });
         return VirtualID;
     }
-    public async GetVirtualID(AppID: string, SystemID: string): Promise<string> {
+    public async GetVirtualID(AppID: string, SystemID: string): Promise<string | null> {
+        if (
+            (await this.DB.application.count({ where: { AppID: AppID } }).then(cnt => cnt === 0)) ||
+            (await this.DB.masteruserrecord.count({ where: { ID: SystemID } }).then(cnt => cnt === 0))
+        )
+            return null;
         const Record = await this.mysql.findMany({
             select: {
                 VirtualID: true,

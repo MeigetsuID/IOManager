@@ -88,7 +88,8 @@ export default class ApplicationManager extends DatabaseConnector {
     public async CreateApp(
         DeveloperID: string,
         arg: CreateApplicationArg
-    ): Promise<{ client_id: string; client_secret?: string }> {
+    ): Promise<{ client_id: string; client_secret?: string } | null> {
+        if (await this.DB.masteruserrecord.count({ where: { ID: DeveloperID } }).then(cnt => cnt === 0)) return null;
         const AppID = CreateAppID();
         const AppSecret = arg.public ? 'public' : CreateAppSecret();
         /* v8 ignore next */

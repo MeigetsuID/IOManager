@@ -25,18 +25,30 @@ describe('Virtual ID Manager Test', () => {
             terms_of_service: 'http://localhost/terms',
             public: false,
         }).then(data => {
+            if (!data) throw new Error('Invalid Developer ID');
             AppID = data.client_id;
         });
     });
-    test('Get Virtual ID', async () => {
+    test('Get Virtual ID/OK', async () => {
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
         expect(IssuedVirtualID).toMatch(/^vid-[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$/);
         const Result = await VirtualID.GetVirtualID(AppID, SystemID);
         expect(Result).toBe(IssuedVirtualID);
     });
 
+    test('Get Virtual ID/App Not Found', async () => {
+        const Result = await VirtualID.GetVirtualID('appid-notfound', SystemID);
+        expect(Result).toBe(null);
+    });
+
+    test('Get Virtual ID/Account Not Found', async () => {
+        const Result = await VirtualID.GetVirtualID(AppID, 'systemid-notfound');
+        expect(Result).toBe(null);
+    });
+
     test('Get Linked Information/OK', async () => {
         const IssuedVirtualID = await VirtualID.GetVirtualID(AppID, SystemID);
+        if (!IssuedVirtualID) throw new Error('Invalid AppID or SystemID');
         const Expected = {
             app: AppID,
             id: SystemID,
@@ -65,7 +77,10 @@ describe('Virtual ID Manager Test', () => {
                 public: false,
             })
         );
-        const AppIDs = await Promise.all(Apps).then(data => data.map(app => app.client_id));
+        const AppIDs = await Promise.all(Apps).then(data => {
+            if (data.some(app => !app)) throw new Error('Invalid Developer ID');
+            return data.map(app => (app as { client_id: string, client_secret: string }).client_id);
+        });
         const VirtualIDs = await Promise.all(AppIDs.map(app => VirtualID.GetVirtualID(app, '3010404006752')));
         const Result = await VirtualID.GetAllVirtualIDBySystemID('3010404006752');
         expect(Result.sort()).toStrictEqual(VirtualIDs.sort());
@@ -81,6 +96,7 @@ describe('Virtual ID Manager Test', () => {
             terms_of_service: 'http://localhost/terms',
             public: false,
         });
+        if (!AppInfo) throw new Error('Invalid Developer ID');
         const CreateVIDs = [...Array(10)].map(async () => {
             const UserID = generate({ length: 20, charset: 'alphanumeric' });
             const GeneratedSystemID = await CreateID(UserID);
