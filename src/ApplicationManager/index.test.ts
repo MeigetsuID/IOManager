@@ -66,7 +66,9 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             public: false,
         };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const Expect = {
+            client_id: AppIDAndSecret.client_id,
             name: 'Test Application',
             description: 'This is a test application.',
             redirect_uri: ['https://example.com'],
@@ -74,7 +76,6 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         };
-        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
         expect(ApplicationInfo).toStrictEqual(Expect);
     });
@@ -195,7 +196,9 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             public: false,
         };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const Expect = {
+            client_id: AppIDAndSecret.client_id,
             name: 'Test Application 2',
             description: 'This is a test application.',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -203,7 +206,6 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         };
-        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
             regenerate_secret: false,
             name: 'Test Application 2',
@@ -247,7 +249,9 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             public: true,
         };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const Expect = {
+            client_id: AppIDAndSecret.client_id,
             name: 'Test Application 2',
             description: 'This is a test application.',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -255,7 +259,6 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         };
-        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
             regenerate_secret: false,
             name: 'Test Application 2',
@@ -306,6 +309,7 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         const GetResultBeforeDelete = await Application.GetApp(AppIDAndSecret.client_id);
         expect(GetResultBeforeDelete).toStrictEqual({
+            client_id: AppIDAndSecret.client_id,
             name: 'Test Application',
             description: 'This is a test application.',
             redirect_uri: ['https://example.com'],
