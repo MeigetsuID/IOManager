@@ -230,7 +230,8 @@ export default class ApplicationManager extends DatabaseConnector {
     }
     public async AuthApp(
         AppID: string,
-        AppSecret: string
+        AppSecret: string,
+        RedirectUri: string
     ): Promise<{ developer: string; account_type: number } | null> {
         return await this.mysql
             .findUnique({
@@ -249,7 +250,8 @@ export default class ApplicationManager extends DatabaseConnector {
             .then(record => {
                 if (!record) return null;
                 const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
-                return ToHash(AppSecret, 'echo') === DiskRecord.secret
+                return ToHash(AppSecret, 'echo') === DiskRecord.secret &&
+                    DiskRecord.redirect_uri.some(uri => uri === RedirectUri)
                     ? { developer: record.DeveloperID, account_type: record.Account.AccountType }
                     : null;
             });

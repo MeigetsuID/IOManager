@@ -462,7 +462,7 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
         if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
-        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret);
+        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret, AppBaseInfo.redirect_uri[0]);
         expect(AuthRes).toStrictEqual({
             developer: DeveloperID,
             account_type: 0,
@@ -470,7 +470,7 @@ describe('Application Manager All Test', () => {
     });
 
     test('Auth Application/Not Found', async () => {
-        const AuthRes = await Application.AuthApp(`app-${uuidv4()}`, 'test');
+        const AuthRes = await Application.AuthApp(`app-${uuidv4()}`, 'test', 'https://example.com');
         expect(AuthRes).toBe(null);
     });
 
@@ -485,7 +485,23 @@ describe('Application Manager All Test', () => {
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
-        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, 'test');
+        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, 'test', AppBaseInfo.redirect_uri[0]);
+        expect(AuthRes).toBe(null);
+    });
+
+    test('Auth Application/Redirect URI Error', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: false,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
+        if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
+        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret, 'https://example.com/test');
         expect(AuthRes).toBe(null);
     });
 });
