@@ -44,8 +44,9 @@ jobs:
           cache: npm
           scope: '@MeigetsuID'
       - name: Ready to run
-        run: npm ci
+        run: |
+          echo "@meigetsuid:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          npm ci
       - name: Publish
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
