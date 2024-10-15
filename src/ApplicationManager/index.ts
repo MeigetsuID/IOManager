@@ -228,11 +228,19 @@ export default class ApplicationManager extends DatabaseConnector {
                     });
             });
     }
-    public async AuthApp(AppID: string, AppSecret: string): Promise<string | null> {
+    public async AuthApp(
+        AppID: string,
+        AppSecret: string
+    ): Promise<{ developer: string; account_type: number } | null> {
         return await this.mysql
             .findUnique({
                 select: {
                     DeveloperID: true,
+                    Account: {
+                        select: {
+                            AccountType: true,
+                        },
+                    },
                 },
                 where: {
                     AppID: AppID,
@@ -241,7 +249,9 @@ export default class ApplicationManager extends DatabaseConnector {
             .then(record => {
                 if (!record) return null;
                 const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
-                return ToHash(AppSecret, 'echo') === DiskRecord.secret ? record.DeveloperID : null;
+                return ToHash(AppSecret, 'echo') === DiskRecord.secret
+                    ? { developer: record.DeveloperID, account_type: record.Account.AccountType }
+                    : null;
             });
     }
 }

@@ -463,7 +463,10 @@ describe('Application Manager All Test', () => {
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
         if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
         const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret);
-        expect(AuthRes).toBe(DeveloperID);
+        expect(AuthRes).toStrictEqual({
+            developer: DeveloperID,
+            account_type: 0,
+        });
     });
 
     test('Auth Application/Not Found', async () => {
