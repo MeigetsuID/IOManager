@@ -54,10 +54,12 @@ describe('Cascade Test', () => {
                     mailaddress: 'cascade-test@mail.meigetsu.jp',
                     account_type: 4,
                 });
-                const AppInfosAfterUpdate = await Promise.all(AppInfos.map(app => {
-                    if (!app) throw new Error('Invalid Developer ID');
-                    return Application.GetApp(app.client_id)
-                }));
+                const AppInfosAfterUpdate = await Promise.all(
+                    AppInfos.map(app => {
+                        if (!app) throw new Error('Invalid Developer ID');
+                        return Application.GetApp(app.client_id);
+                    })
+                );
                 AppInfosAfterUpdate.forEach((app, index) => {
                     const AppData = AppInfos[index];
                     if (!AppData) throw new Error('Invalid Developer ID');
@@ -241,28 +243,40 @@ describe('Cascade Test', () => {
             };
             if (!IssuedVirtualIDForMeigetsu2020.meigetsu2020 || !IssuedVirtualIDForMeigetsu2020.cascade_test)
                 throw new Error('Invalid AppID or SystemID');
-            CacheRecords.virtual_id.for_meigetsu2020 = IssuedVirtualIDForMeigetsu2020 as { meigetsu2020: string; cascade_test: string };
+            CacheRecords.virtual_id.for_meigetsu2020 = IssuedVirtualIDForMeigetsu2020 as {
+                meigetsu2020: string;
+                cascade_test: string;
+            };
             const IssuedVirtualIDForCascadeTest = {
                 meigetsu2020: await VirtualID.GetVirtualID(AppInfoMeigetsu2020.client_id, '4010404006783'),
                 cascade_test: await VirtualID.GetVirtualID(AppInfoCascadeTest.client_id, '4010404006783'),
             };
             if (!IssuedVirtualIDForCascadeTest.meigetsu2020 || !IssuedVirtualIDForCascadeTest.cascade_test)
                 throw new Error('Invalid AppID or SystemID');
-            CacheRecords.virtual_id.for_cascade_test = IssuedVirtualIDForCascadeTest as { meigetsu2020: string; cascade_test: string };
+            CacheRecords.virtual_id.for_cascade_test = IssuedVirtualIDForCascadeTest as {
+                meigetsu2020: string;
+                cascade_test: string;
+            };
             const IssuedTokenForMeigetsu2020 = {
                 meigetsu2020: await Token.CreateToken(IssuedVirtualIDForMeigetsu2020.meigetsu2020, ['supervisor']),
                 cascade_test: await Token.CreateToken(IssuedVirtualIDForMeigetsu2020.cascade_test, ['user.read']),
             };
             if (!IssuedTokenForMeigetsu2020.meigetsu2020 || !IssuedTokenForMeigetsu2020.cascade_test)
                 throw new Error('Invalid VirtualID');
-            CacheRecords.token.for_meigetsu2020 = IssuedTokenForMeigetsu2020 as { meigetsu2020: TokenResponse; cascade_test: TokenResponse };
+            CacheRecords.token.for_meigetsu2020 = IssuedTokenForMeigetsu2020 as {
+                meigetsu2020: TokenResponse;
+                cascade_test: TokenResponse;
+            };
             const IssuedTokenForCascadeTest = {
                 meigetsu2020: await Token.CreateToken(IssuedVirtualIDForCascadeTest.meigetsu2020, ['supervisor']),
                 cascade_test: await Token.CreateToken(IssuedVirtualIDForCascadeTest.cascade_test, ['user.read']),
             };
             if (!IssuedTokenForCascadeTest.meigetsu2020 || !IssuedTokenForCascadeTest.cascade_test)
                 throw new Error('Invalid VirtualID');
-            CacheRecords.token.for_cascade_test = IssuedTokenForCascadeTest as { meigetsu2020: TokenResponse; cascade_test: TokenResponse };
+            CacheRecords.token.for_cascade_test = IssuedTokenForCascadeTest as {
+                meigetsu2020: TokenResponse;
+                cascade_test: TokenResponse;
+            };
         });
         it('Check', async () => {
             await Account.DeleteAccount('4010404006783');

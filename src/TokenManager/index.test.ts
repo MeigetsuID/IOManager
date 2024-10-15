@@ -52,7 +52,7 @@ describe('Token Manager Test', () => {
             const TokenInfo = await Token.CreateToken(CreateVirtualIDText(), ['supervisor']);
             expect(TokenInfo).toBeNull();
         });
-    })
+    });
     describe('Check Access Token', () => {
         test('Supervisor Cover Check', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
@@ -219,7 +219,7 @@ describe('Token Manager Test', () => {
             const VirtualIDs = await Promise.all(CreateVIDs);
             const CreateTokens = VirtualIDs.map(vid => {
                 if (!vid) throw new Error('Invalid AppID or SystemID.');
-                return Token.CreateToken(vid, ['supervisor'])
+                return Token.CreateToken(vid, ['supervisor']);
             });
             const TokenRecords = await Promise.all(CreateTokens);
             const RevokeResult = await Token.RevokeAll(VirtualIDs.filter(vid => vid !== null) as string[]);

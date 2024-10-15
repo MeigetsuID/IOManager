@@ -79,7 +79,7 @@ describe('Virtual ID Manager Test', () => {
         );
         const AppIDs = await Promise.all(Apps).then(data => {
             if (data.some(app => !app)) throw new Error('Invalid Developer ID');
-            return data.map(app => (app as { client_id: string, client_secret: string }).client_id);
+            return data.map(app => (app as { client_id: string; client_secret: string }).client_id);
         });
         const VirtualIDs = await Promise.all(AppIDs.map(app => VirtualID.GetVirtualID(app, '3010404006752')));
         const Result = await VirtualID.GetAllVirtualIDBySystemID('3010404006752');
