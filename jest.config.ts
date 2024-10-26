@@ -6,6 +6,8 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+    testEnvironment: 'node',
+    verbose: true,
     clearMocks: true,
     collectCoverage: true,
     coverageDirectory: 'coverage',
@@ -13,7 +15,7 @@ const config: Config = {
     transform: {
         '^.+\\.[tj]sx?$': 'ts-jest',
     },
-    transformIgnorePatterns: ['node_modules/(?!(nodeeasyfileio))'],
+    transformIgnorePatterns: ['node_modules/'],
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
