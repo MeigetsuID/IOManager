@@ -252,4 +252,54 @@ describe('Token Manager Test', () => {
             expect(await Promise.all(CheckTokens)).toStrictEqual(Array(10).fill(null));
         });
     });
+
+    describe('Revoke For Delete', () => {
+        const AccountMgr = new AccountManager();
+        const CacheInfo = {
+            SystemID: '',
+            AppID: '',
+            AccessToken: {
+                ForSelf: '',
+                ForOther: '',
+            }
+        };
+        beforeAll(async () => {
+            CacheInfo.SystemID = await CreateID(generate({ length: 20, charset: 'alphanumeric' }));
+            await AccountMgr.CreateAccount({
+                id: CacheInfo.SystemID,
+                user_id: generate({ length: 20, charset: 'alphanumeric' }),
+                name: 'トークンマネージャーテスト',
+                mailaddress: `${generate({ length: 10, charset: 'alphanumeric' })}@mail.meigetsu.jp`,
+                password: generate({ length: 20, charset: 'alphanumeric' }),
+                account_type: 0,
+            });
+            await AppMgr.CreateApp(CacheInfo.SystemID, {
+                name: 'TestApp',
+                description: 'Test Application',
+                redirect_uri: ['http://localhost'],
+                privacy_policy: 'http://localhost/privacy',
+                terms_of_service: 'http://localhost/terms',
+                public: false,
+            }).then(data => {
+                if (!data) throw new Error('Developer is not found.');
+                CacheInfo.AppID = data.client_id;
+            });
+            const SelfVID = await VirtualID.GetVirtualID(CacheInfo.AppID, CacheInfo.SystemID);
+            const OtherVID = await VirtualID.GetVirtualID(CacheInfo.AppID, '4010404006753');
+            if (!SelfVID || !OtherVID) throw new Error('Virtual ID Issue Error.');
+            await Token.CreateToken(SelfVID, ['supervisor']).then(data => {
+                if (!data) throw new Error('Token Issue Error.');
+                CacheInfo.AccessToken.ForSelf = data.access_token;
+            });
+            await Token.CreateToken(OtherVID, ['supervisor']).then(data => {
+                if (!data) throw new Error('Token Issue Error.');
+                CacheInfo.AccessToken.ForOther = data.access_token;
+            });
+        });
+        test('Check', async () => {
+            await Token.RevokeForDelete(CacheInfo.SystemID).then(result => expect(result).toBeTruthy());
+            await Token.Check(CacheInfo.AccessToken.ForSelf, []).then(data => expect(data).toBeNull());
+            await Token.Check(CacheInfo.AccessToken.ForOther, []).then(data => expect(data).toBeNull());
+        });
+    });
 });
