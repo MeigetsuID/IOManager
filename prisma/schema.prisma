@@ -23,6 +23,7 @@ model masteruserrecord {
     CreatedAt DateTime @default(now())
     Applications application[]
     VirtualIDs virtualid[]
+    Diaries diary[]
 }
 
 model application {
@@ -50,4 +51,15 @@ model token {
     AExpiresAt DateTime @db.DateTime()
     RExpiresAt DateTime @db.DateTime()
     VirutalIDTable virtualid @relation(fields: [VirtualID], references: [VirtualID], onDelete: Cascade)
+}
+
+model diary {
+    ID String @db.VarChar(36) @unique @id               // 日記またはコメントのID
+    WriterID String @db.VarChar(13)                     // 日記またはコメントの投稿者のID
+    Title String @db.Text                               // 日記のタイトル
+    UploadDate DateTime @db.DateTime() @default(now())  // 日記またはコメントの投稿日時
+    LastUploadDate DateTime? @db.DateTime()             // 日記またはコメントの最終更新日時
+    ScopeOfDisclosure Int @db.UnsignedTinyInt           // 日記の公開範囲
+    Comment String? @db.VarChar(36)                     // （コメントの場合）対象の日記やコメントID
+    Account masteruserrecord @relation(fields: [WriterID], references: [ID], onUpdate: Cascade, onDelete: Cascade)
 }
