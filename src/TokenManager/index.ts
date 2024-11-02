@@ -147,22 +147,24 @@ export default class TokenManager extends DatabaseConnector {
         else return await this.mysql.deleteMany({ where: { VirtualID: VirtualID } }).then(result => result.count > 0);
     }
     public async RevokeForDelete(SystemID: string): Promise<boolean> {
-        return await this.mysql.deleteMany({
-            where: {
-                VirutalIDTable: {
-                    OR: [
-                        {
-                            ID: SystemID,
-                        },
-                        {
-                            Application: {
-                                DeveloperID: SystemID,
-                            }
-                        }
-                    ]
-                }
-            }
-        }).then(result => result.count > 0);
+        return await this.mysql
+            .deleteMany({
+                where: {
+                    VirutalIDTable: {
+                        OR: [
+                            {
+                                ID: SystemID,
+                            },
+                            {
+                                Application: {
+                                    DeveloperID: SystemID,
+                                },
+                            },
+                        ],
+                    },
+                },
+            })
+            .then(result => result.count > 0);
     }
     public async RemoveExpiredTokens(): Promise<void> {
         await this.mysql.deleteMany({

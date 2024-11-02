@@ -462,7 +462,11 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
         if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
-        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret, AppBaseInfo.redirect_uri[0]);
+        const AuthRes = await Application.AuthApp(
+            AppIDAndSecret.client_id,
+            AppIDAndSecret.client_secret,
+            AppBaseInfo.redirect_uri[0]
+        );
         expect(AuthRes).toStrictEqual({
             developer: DeveloperID,
             account_type: 0,
@@ -519,7 +523,11 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
         if (!AppIDAndSecret.client_secret) throw new Error('client_secret is not found.');
-        const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, AppIDAndSecret.client_secret, 'https://example.com/test');
+        const AuthRes = await Application.AuthApp(
+            AppIDAndSecret.client_id,
+            AppIDAndSecret.client_secret,
+            'https://example.com/test'
+        );
         expect(AuthRes).toBe(null);
     });
 });

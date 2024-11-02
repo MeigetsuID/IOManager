@@ -261,7 +261,7 @@ describe('Token Manager Test', () => {
             AccessToken: {
                 ForSelf: '',
                 ForOther: '',
-            }
+            },
         };
         beforeAll(async () => {
             CacheInfo.SystemID = await CreateID(generate({ length: 20, charset: 'alphanumeric' }));
