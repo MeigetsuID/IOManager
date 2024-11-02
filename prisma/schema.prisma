@@ -58,7 +58,7 @@ model diary {
     WriterID String @db.VarChar(13)                     // 日記またはコメントの投稿者のID
     Title String @db.Text                               // 日記のタイトル
     UploadDate DateTime @db.DateTime() @default(now())  // 日記またはコメントの投稿日時
-    LastUploadDate DateTime? @db.DateTime()             // 日記またはコメントの最終更新日時
+    LastUpdateDate DateTime? @db.DateTime()             // 日記またはコメントの最終更新日時
     ScopeOfDisclosure Int @db.UnsignedTinyInt           // 日記の公開範囲
     Comment String? @db.VarChar(36)                     // （コメントの場合）対象の日記やコメントID
     Account masteruserrecord @relation(fields: [WriterID], references: [ID], onUpdate: Cascade, onDelete: Cascade)
