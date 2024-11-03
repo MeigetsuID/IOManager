@@ -9,7 +9,7 @@ export type DiaryBaseData = {
     content: string;
     scope_of_disclosure: number;
     allow_comment: boolean;
-}
+};
 
 export type CreateDiaryArg = DiaryBaseData & {
     comment_target?: string;
@@ -21,7 +21,7 @@ export type DiaryInformation = DiaryBaseData & {
     upload_date: Date;
     last_update_date: Date | null;
     comments: DiaryInformation[];
-}
+};
 
 export function CreateDiaryID() {
     return `did-${uuidv4().replace(/-/g, '')}`;
@@ -50,7 +50,7 @@ export default class DiaryManager extends DatabaseConnector {
                 ScopeOfDisclosure: arg.scope_of_disclosure,
                 AllowComment: arg.allow_comment,
                 Comment: arg.comment_target,
-            }
+            },
         });
         writeFile(`./diaries/${DiaryID}.txt`, arg.content);
         return DiaryID;
@@ -68,23 +68,25 @@ export default class DiaryManager extends DatabaseConnector {
                     select: {
                         UserID: true,
                         UserName: true,
-                    }
-                }
+                    },
+                },
             },
             where: {
-                ID: DiaryID
+                ID: DiaryID,
             },
         });
         if (!DiaryInformation) return null;
         const Content = readFile(`./diaries/${DiaryID}.txt`);
-        const CommentIDs = await this.mysql.findMany({
-            select: {
-                ID: true
-            },
-            where: {
-                Comment: DiaryID,
-            }
-        }).then(comments => comments.map(comment => comment.ID));
+        const CommentIDs = await this.mysql
+            .findMany({
+                select: {
+                    ID: true,
+                },
+                where: {
+                    Comment: DiaryID,
+                },
+            })
+            .then(comments => comments.map(comment => comment.ID));
         return {
             title: DiaryInformation.Title,
             content: Content,
@@ -94,18 +96,20 @@ export default class DiaryManager extends DatabaseConnector {
             writer_id: DiaryInformation.Account.UserID,
             upload_date: DiaryInformation.UploadDate,
             last_update_date: DiaryInformation.LastUpdateDate,
-            comments: await Promise.all(CommentIDs.map(commentID => this.GetDiary(commentID).then(diary => diary!)))
+            comments: await Promise.all(CommentIDs.map(commentID => this.GetDiary(commentID).then(diary => diary!))),
         };
     }
     public async GetDiaries(WriterID: string): Promise<DiaryInformation[]> {
-        const DiaryIDs = await this.mysql.findMany({
-            select: {
-                ID: true
-            },
-            where: {
-                WriterID: WriterID
-            }
-        }).then(diaries => diaries.map(diary => diary.ID));
+        const DiaryIDs = await this.mysql
+            .findMany({
+                select: {
+                    ID: true,
+                },
+                where: {
+                    WriterID: WriterID,
+                },
+            })
+            .then(diaries => diaries.map(diary => diary.ID));
         return Promise.all(DiaryIDs.map(diaryID => this.GetDiary(diaryID).then(diary => diary!)));
     }
     public async UpdateDiary(DiaryID: string, arg: Partial<DiaryBaseData>): Promise<void> {
@@ -116,27 +120,21 @@ export default class DiaryManager extends DatabaseConnector {
                 LastUpdateDate: new Date(),
             },
             where: {
-                ID: DiaryID
-            }
+                ID: DiaryID,
+            },
         });
         if (arg.content) writeFile(`./diaries/${DiaryID}.txt`, arg.content, true);
     }
     public async DeleteDiary(DiaryID: string): Promise<void> {
         const Targets = await this.mysql.findMany({
             where: {
-                OR: [
-                    { ID: DiaryID },
-                    { Comment: DiaryID }
-                ]
-            }
+                OR: [{ ID: DiaryID }, { Comment: DiaryID }],
+            },
         });
         await this.mysql.deleteMany({
             where: {
-                OR: [
-                    { ID: DiaryID },
-                    { Comment: DiaryID }
-                ]
-            }
+                OR: [{ ID: DiaryID }, { Comment: DiaryID }],
+            },
         });
         Targets.forEach(target => {
             writeJson(`./diaries/archived/${DiaryID}/${target.ID}.json`, target);
