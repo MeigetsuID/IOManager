@@ -87,7 +87,7 @@ export default class DiaryManager extends DatabaseConnector {
                 },
             })
             .then(comments => comments.map(comment => comment.ID));
-        return {
+        const Ret = {
             title: DiaryInformation.Title,
             content: Content,
             scope_of_disclosure: DiaryInformation.ScopeOfDisclosure,
@@ -98,6 +98,10 @@ export default class DiaryManager extends DatabaseConnector {
             last_update_date: DiaryInformation.LastUpdateDate,
             comments: await Promise.all(CommentIDs.map(commentID => this.GetDiary(commentID).then(diary => diary!))),
         };
+        Object.keys(Ret).forEach(key => {
+            if (Ret[key] == null) delete Ret[key];
+        });
+        return Ret;
     }
     public async GetDiaries(WriterID: string): Promise<DiaryInformation[]> {
         const DiaryIDs = await this.mysql
