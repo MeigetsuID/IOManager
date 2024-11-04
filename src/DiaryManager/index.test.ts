@@ -40,7 +40,7 @@ describe('Diary Manager All Test', () => {
             NoComment: '',
             ContainComment: '',
             CommentID: '',
-        }
+        };
         beforeAll(async () => {
             await Diary.CreateDiary('4010404006753', {
                 title: 'Test Diary',
