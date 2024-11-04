@@ -62,7 +62,7 @@ export default class DiaryManager extends DatabaseConnector {
                 Comment: arg.comment_target,
             },
         });
-        writeFile(`./diaries/${DiaryID}.txt`, arg.content);
+        writeFile(`./system/diaries/${DiaryID}.txt`, arg.content);
         return DiaryID;
     }
     public async GetDiary(DiaryID: string): Promise<DiaryInformation | null> {
@@ -86,7 +86,7 @@ export default class DiaryManager extends DatabaseConnector {
             },
         });
         if (!DiaryInformation) return null;
-        const Content = readFile(`./diaries/${DiaryID}.txt`);
+        const Content = readFile(`./system/diaries/${DiaryID}.txt`);
         const CommentIDs = await this.mysql
             .findMany({
                 select: {
@@ -155,7 +155,7 @@ export default class DiaryManager extends DatabaseConnector {
                 ID: DiaryID,
             },
         });
-        if (arg.content) writeFile(`./diaries/${DiaryID}.txt`, arg.content, true);
+        if (arg.content) writeFile(`./system/diaries/${DiaryID}.txt`, arg.content, true);
         return true;
     }
     public async DeleteDiary(DiaryID: string): Promise<boolean> {
@@ -171,16 +171,16 @@ export default class DiaryManager extends DatabaseConnector {
             },
         });
         Targets.forEach(target => {
-            writeJson(`./diaries/archived/${DiaryID}/${target.ID}.json`, target);
-            renameSync(`./diaries/${target.ID}.txt`, `./diaries/archived/${DiaryID}/${target.ID}.txt`);
+            writeJson(`./system/diaries/archived/${DiaryID}/${target.ID}.json`, target);
+            renameSync(`./system/diaries/${target.ID}.txt`, `./system/diaries/archived/${DiaryID}/${target.ID}.txt`);
         });
         const archive = archiver.create('zip', { zlib: { level: 9 } });
-        const output = createWriteStream(`./diaries/archived/${DiaryID}.zip`);
+        const output = createWriteStream(`./system/diaries/archived/${DiaryID}.zip`);
         archive.pipe(output);
-        archive.glob(`./diaries/archived/${DiaryID}/**/*`);
+        archive.glob(`./system/diaries/archived/${DiaryID}/**/*`);
         archive.finalize();
         output.on('close', () => {
-            rmSync(`./diaries/archived/${DiaryID}`, { recursive: true });
+            rmSync(`./system/diaries/archived/${DiaryID}`, { recursive: true });
         });
         output.end();
         return true;

@@ -239,8 +239,8 @@ describe('Diary Manager All Test', () => {
                 const Result = await Diary.DeleteDiary(DiaryID);
                 expect(Result).toBeTruthy();
                 expect(await Diary.GetDiary(DiaryID)).toBeNull();
-                expect(existsSync(`./diaries/${DiaryID}.txt`)).toBeFalsy();
-                expect(existsSync(`./diaries/archived/${DiaryID}.zip`)).toBeTruthy();
+                expect(existsSync(`./system/diaries/${DiaryID}.txt`)).toBeFalsy();
+                expect(existsSync(`./system/diaries/archived/${DiaryID}.zip`)).toBeTruthy();
             });
             it('Contain Comment', async () => {
                 const MainContent = await Diary.CreateDiary('4010404006753', {
@@ -260,16 +260,16 @@ describe('Diary Manager All Test', () => {
                 expect(Result).toBeTruthy();
                 expect(await Diary.GetDiary(MainContent)).toBeNull();
                 expect(await Diary.GetDiary(CommentContent)).toBeNull();
-                expect(existsSync(`./diaries/${MainContent}.txt`)).toBeFalsy();
-                expect(existsSync(`./diaries/${CommentContent}.txt`)).toBeFalsy();
-                expect(existsSync(`./diaries/archived/${MainContent}.zip`)).toBeTruthy();
-                expect(existsSync(`./diaries/archived/${CommentContent}.zip`)).toBeFalsy();
+                expect(existsSync(`./system/diaries/${MainContent}.txt`)).toBeFalsy();
+                expect(existsSync(`./system/diaries/${CommentContent}.txt`)).toBeFalsy();
+                expect(existsSync(`./system/diaries/archived/${MainContent}.zip`)).toBeTruthy();
+                expect(existsSync(`./system/diaries/archived/${CommentContent}.zip`)).toBeFalsy();
             });
         });
         it('Not Exists', async () => {
             const Result = await Diary.DeleteDiary('did-notfound');
             expect(Result).toBeFalsy();
-            expect(existsSync('./diaries/archived/did-notfound.zip')).toBeFalsy();
+            expect(existsSync('./system/diaries/archived/did-notfound.zip')).toBeFalsy();
         });
     });
     describe('Delete All Diaries', () => {
@@ -302,8 +302,8 @@ describe('Diary Manager All Test', () => {
             await Diary.DeleteAllDiaries(Cache.AccountID);
             Cache.DiaryIDs.forEach(async ID => {
                 expect(await Diary.GetDiary(ID)).toBeNull();
-                expect(existsSync(`./diaries/${ID}.txt`)).toBeFalsy();
-                expect(existsSync(`./diaries/archived/${ID}.zip`)).toBeTruthy();
+                expect(existsSync(`./system/diaries/${ID}.txt`)).toBeFalsy();
+                expect(existsSync(`./system/diaries/archived/${ID}.zip`)).toBeTruthy();
             });
         });
     });
