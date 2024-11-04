@@ -24,6 +24,15 @@ export type DiaryInformation = DiaryBaseData & {
     comments: DiaryInformation[];
 };
 
+export type DiaryOverview = {
+    id: string;
+    title: string;
+    scope_of_disclosure: number;
+    upload_date: Date;
+    last_update_date: Date;
+    comments: number;
+};
+
 export function CreateDiaryID() {
     return `did-${uuidv4().replace(/-/g, '')}`;
 }
@@ -105,18 +114,33 @@ export default class DiaryManager extends DatabaseConnector {
         });
         return Ret;
     }
-    public async GetDiaries(WriterID: string): Promise<DiaryInformation[]> {
-        const DiaryIDs = await this.mysql
+    public async GetDiaries(WriterID: string): Promise<DiaryOverview[]> {
+        return await this.mysql
             .findMany({
                 select: {
                     ID: true,
+                    Title: true,
+                    ScopeOfDisclosure: true,
+                    UploadDate: true,
+                    LastUpdateDate: true,
                 },
                 where: {
                     WriterID: WriterID,
                 },
             })
-            .then(diaries => diaries.map(diary => diary.ID));
-        return Promise.all(DiaryIDs.map(diaryID => this.GetDiary(diaryID).then(diary => diary!)));
+            .then(diaries => {
+                const CreateDiaryRecordPromises: Promise<DiaryOverview>[] = diaries.map(async diary => {
+                    return {
+                        id: diary.ID,
+                        title: diary.Title,
+                        scope_of_disclosure: diary.ScopeOfDisclosure,
+                        upload_date: diary.UploadDate,
+                        last_update_date: diary.LastUpdateDate,
+                        comments: await this.mysql.count({ where: { Comment: diary.ID } }),
+                    };
+                });
+                return Promise.all(CreateDiaryRecordPromises);
+            });
     }
     public async UpdateDiary(DiaryID: string, arg: Partial<DiaryBaseData>): Promise<void> {
         await this.mysql.update({
