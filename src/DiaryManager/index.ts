@@ -147,7 +147,7 @@ export default class DiaryManager extends DatabaseConnector {
             data: {
                 Title: arg.title,
                 ScopeOfDisclosure: arg.scope_of_disclosure,
-                LastUpdateDate: new Date(),
+                AllowComment: arg.allow_comment,
             },
             where: {
                 ID: DiaryID,
