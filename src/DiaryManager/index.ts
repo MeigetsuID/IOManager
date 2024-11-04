@@ -126,6 +126,7 @@ export default class DiaryManager extends DatabaseConnector {
                 },
                 where: {
                     WriterID: WriterID,
+                    Comment: null,
                 },
             })
             .then(diaries => {
