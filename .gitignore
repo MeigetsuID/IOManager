@@ -136,3 +136,4 @@ migrations/
 # Meigetsu ID Cache Data
 system/application/data/
 system/*.dat
+diaries/*
