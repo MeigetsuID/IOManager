@@ -287,24 +287,28 @@ describe('Diary Manager All Test', () => {
                 password: 'password01',
                 account_type: 4,
             });
-            [...Array(20)].forEach(async () => {
-                await Diary.CreateDiary(Cache.AccountID, {
-                    title: 'Test Diary',
-                    scope_of_disclosure: 0,
-                    allow_comment: true,
-                    content: 'Test Content',
-                }).then(DiaryID => {
-                    Cache.DiaryIDs.push(DiaryID);
-                });
-            });
+            await Promise.all(
+                [...Array(20)].map(async () => {
+                    await Diary.CreateDiary(Cache.AccountID, {
+                        title: 'Test Diary',
+                        scope_of_disclosure: 0,
+                        allow_comment: true,
+                        content: 'Test Content',
+                    }).then(DiaryID => {
+                        Cache.DiaryIDs.push(DiaryID);
+                    });
+                })
+            );
         });
         it('Test', async () => {
             await Diary.DeleteAllDiaries(Cache.AccountID);
-            Cache.DiaryIDs.forEach(async ID => {
-                expect(await Diary.GetDiary(ID)).toBeNull();
-                expect(existsSync(`./system/diaries/${ID}.txt`)).toBeFalsy();
-                expect(existsSync(`./system/diaries/archived/${ID}.zip`)).toBeTruthy();
-            });
+            await Promise.all(
+                Cache.DiaryIDs.map(async ID => {
+                    expect(await Diary.GetDiary(ID)).toBeNull();
+                    expect(existsSync(`./system/diaries/${ID}.txt`)).toBeFalsy();
+                    expect(existsSync(`./system/diaries/archived/${ID}.zip`)).toBeTruthy();
+                })
+            );
         });
     });
 });
