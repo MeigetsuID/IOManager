@@ -47,6 +47,21 @@ CREATE TABLE `token` (
     PRIMARY KEY (`AccessToken`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `diary` (
+    `ID` VARCHAR(36) NOT NULL,
+    `WriterID` VARCHAR(13) NOT NULL,
+    `Title` TEXT NOT NULL,
+    `UploadDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `LastUpdateDate` DATETIME NULL,
+    `ScopeOfDisclosure` TINYINT UNSIGNED NOT NULL,
+    `AllowComment` BOOLEAN NOT NULL,
+    `Comment` VARCHAR(36) NULL,
+
+    UNIQUE INDEX `diary_ID_key`(`ID`),
+    PRIMARY KEY (`ID`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `application` ADD CONSTRAINT `application_DeveloperID_fkey` FOREIGN KEY (`DeveloperID`) REFERENCES `masteruserrecord`(`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -58,6 +73,9 @@ ALTER TABLE `virtualid` ADD CONSTRAINT `virtualid_AppID_fkey` FOREIGN KEY (`AppI
 
 -- AddForeignKey
 ALTER TABLE `token` ADD CONSTRAINT `token_VirtualID_fkey` FOREIGN KEY (`VirtualID`) REFERENCES `virtualid`(`VirtualID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `diary` ADD CONSTRAINT `diary_WriterID_fkey` FOREIGN KEY (`WriterID`) REFERENCES `masteruserrecord`(`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 GRANT SELECT,INSERT,UPDATE,DELETE ON meigetsuid.* TO mgidsrv;
 
