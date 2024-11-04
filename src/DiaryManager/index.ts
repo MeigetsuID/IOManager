@@ -158,12 +158,13 @@ export default class DiaryManager extends DatabaseConnector {
         if (arg.content) writeFile(`./diaries/${DiaryID}.txt`, arg.content, true);
         return true;
     }
-    public async DeleteDiary(DiaryID: string): Promise<void> {
+    public async DeleteDiary(DiaryID: string): Promise<boolean> {
         const Targets = await this.mysql.findMany({
             where: {
                 OR: [{ ID: DiaryID }, { Comment: DiaryID }],
             },
         });
+        if (Targets.length === 0) return false;
         await this.mysql.deleteMany({
             where: {
                 OR: [{ ID: DiaryID }, { Comment: DiaryID }],
@@ -181,5 +182,6 @@ export default class DiaryManager extends DatabaseConnector {
         output.on('close', () => {
             unlinkSync(`./diaries/archived/${DiaryID}`);
         });
+        return true;
     }
 }
