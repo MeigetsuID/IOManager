@@ -182,6 +182,7 @@ export default class DiaryManager extends DatabaseConnector {
         output.on('close', () => {
             unlinkSync(`./diaries/archived/${DiaryID}`);
         });
+        output.end();
         return true;
     }
 }
