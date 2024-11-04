@@ -20,7 +20,7 @@ export type DiaryInformation = DiaryBaseData & {
     writer_name: string;
     writer_id: string;
     upload_date: Date;
-    last_update_date: Date | null;
+    last_update_date: Date;
     comments: DiaryInformation[];
 };
 
