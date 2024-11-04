@@ -162,26 +162,25 @@ describe('Diary Manager All Test', () => {
         });
         it('Exists', async () => {
             const Result = await Diary.GetDiaries(Cache.AccountID);
-            expect(Result.sort()).toStrictEqual(
-                [
-                    {
-                        id: Cache.DiaryID.NoComment,
-                        title: 'Test Diary',
-                        scope_of_disclosure: 0,
-                        upload_date: expect.any(Date),
-                        last_update_date: expect.any(Date),
-                        comments: 0,
-                    },
-                    {
-                        id: Cache.DiaryID.ContainComment,
-                        title: 'Test Diary',
-                        scope_of_disclosure: 0,
-                        upload_date: expect.any(Date),
-                        last_update_date: expect.any(Date),
-                        comments: 1,
-                    },
-                ].sort()
-            );
+            const Expect = [
+                {
+                    id: Cache.DiaryID.NoComment,
+                    title: 'Test Diary',
+                    scope_of_disclosure: 0,
+                    upload_date: expect.any(Date),
+                    last_update_date: expect.any(Date),
+                    comments: 0,
+                },
+                {
+                    id: Cache.DiaryID.ContainComment,
+                    title: 'Test Diary',
+                    scope_of_disclosure: 0,
+                    upload_date: expect.any(Date),
+                    last_update_date: expect.any(Date),
+                    comments: 1,
+                },
+            ].sort((a, b) => a.comments - b.comments);
+            expect(Result.sort((a, b) => a.comments - b.comments)).toStrictEqual(Expect);
         });
         it('Not Exists', async () => {
             const Result = await Diary.GetDiaries('4010404006754');
