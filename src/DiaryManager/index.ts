@@ -109,9 +109,6 @@ export default class DiaryManager extends DatabaseConnector {
             last_update_date: DiaryInformation.LastUpdateDate,
             comments: await Promise.all(CommentIDs.map(commentID => this.GetDiary(commentID).then(diary => diary!))),
         };
-        Object.keys(Ret).forEach(key => {
-            if (Ret[key] == null) delete Ret[key];
-        });
         return Ret;
     }
     public async GetDiaries(WriterID: string): Promise<DiaryOverview[]> {
