@@ -188,4 +188,43 @@ describe('Diary Manager All Test', () => {
             expect(Result).toStrictEqual([]);
         });
     });
+    describe('Update Diary', () => {
+        it('Exists', async () => {
+            const DiaryID = await Diary.CreateDiary('4010404006753', {
+                title: 'Test Diary',
+                scope_of_disclosure: 0,
+                allow_comment: true,
+                content: 'Test Content',
+            });
+            const UpdateExecuteResult = await Diary.UpdateDiary(DiaryID, {
+                title: 'Updated Diary',
+                scope_of_disclosure: 1,
+                allow_comment: false,
+                content: 'Updated Content',
+            });
+            expect(UpdateExecuteResult).toBe(true);
+            const Result = await Diary.GetDiary(DiaryID);
+            expect(Result).toStrictEqual({
+                id: DiaryID,
+                title: 'Updated Diary',
+                scope_of_disclosure: 1,
+                allow_comment: false,
+                content: 'Updated Content',
+                writer_name: '明月',
+                writer_id: 'meigetsu2020',
+                upload_date: expect.any(Date),
+                last_update_date: expect.any(Date),
+                comments: [],
+            });
+        });
+        it('Not Exists', async () => {
+            const Result = await Diary.UpdateDiary('did-notfound', {
+                title: 'Updated Diary',
+                scope_of_disclosure: 1,
+                allow_comment: false,
+                content: 'Updated Content',
+            });
+            expect(Result).toBe(false);
+        });
+    });
 });
