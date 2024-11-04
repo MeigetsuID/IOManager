@@ -143,7 +143,8 @@ export default class DiaryManager extends DatabaseConnector {
                 return Promise.all(CreateDiaryRecordPromises);
             });
     }
-    public async UpdateDiary(DiaryID: string, arg: Partial<DiaryBaseData>): Promise<void> {
+    public async UpdateDiary(DiaryID: string, arg: Partial<DiaryBaseData>): Promise<boolean> {
+        if (await this.mysql.count({ where: { ID: DiaryID } }).then(count => count === 0)) return false;
         await this.mysql.update({
             data: {
                 Title: arg.title,
@@ -155,6 +156,7 @@ export default class DiaryManager extends DatabaseConnector {
             },
         });
         if (arg.content) writeFile(`./diaries/${DiaryID}.txt`, arg.content, true);
+        return true;
     }
     public async DeleteDiary(DiaryID: string): Promise<void> {
         const Targets = await this.mysql.findMany({
