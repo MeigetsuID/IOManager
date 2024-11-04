@@ -272,4 +272,39 @@ describe('Diary Manager All Test', () => {
             expect(existsSync('./diaries/archived/did-notfound.zip')).toBeFalsy();
         });
     });
+    describe('Delete All Diaries', () => {
+        const Cache = {
+            AccountID: '',
+            DiaryIDs: [] as string[],
+        };
+        beforeAll(async () => {
+            Cache.AccountID = await CreateID('diary_test02');
+            await Account.CreateAccount({
+                id: Cache.AccountID,
+                user_id: 'diary_test02',
+                name: 'TestUser',
+                mailaddress: 'del-all-diary-test@mail.meigetsu.jp',
+                password: 'password01',
+                account_type: 4,
+            });
+            [...Array(20)].forEach(async () => {
+                await Diary.CreateDiary(Cache.AccountID, {
+                    title: 'Test Diary',
+                    scope_of_disclosure: 0,
+                    allow_comment: true,
+                    content: 'Test Content',
+                }).then(DiaryID => {
+                    Cache.DiaryIDs.push(DiaryID);
+                });
+            });
+        });
+        it('Test', async () => {
+            await Diary.DeleteAllDiaries(Cache.AccountID);
+            Cache.DiaryIDs.forEach(async ID => {
+                expect(await Diary.GetDiary(ID)).toBeNull();
+                expect(existsSync(`./diaries/${ID}.txt`)).toBeFalsy();
+                expect(existsSync(`./diaries/archived/${ID}.zip`)).toBeTruthy();
+            });
+        });
+    });
 });

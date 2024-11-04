@@ -185,4 +185,17 @@ export default class DiaryManager extends DatabaseConnector {
         output.end();
         return true;
     }
+    public async DeleteAllDiaries(WriterID: string): Promise<void> {
+        const DiaryIDs = await this.mysql
+            .findMany({
+                select: {
+                    ID: true,
+                },
+                where: {
+                    WriterID: WriterID,
+                },
+            })
+            .then(diaries => diaries.map(diary => diary.ID));
+        await Promise.all(DiaryIDs.map(diaryID => this.DeleteDiary(diaryID)));
+    }
 }
