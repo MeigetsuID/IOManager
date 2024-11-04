@@ -1,6 +1,7 @@
 import CreateID from '@meigetsuid/idgenerator';
 import DiaryManager, { CreateDiaryID } from '.';
 import AccountManager from '../AccountManager';
+import { existsSync } from 'node:fs';
 
 describe('Diary Manager Sub Module Test', () => {
     it('Create Diary ID', () => {
@@ -224,6 +225,51 @@ describe('Diary Manager All Test', () => {
                 content: 'Updated Content',
             });
             expect(Result).toBe(false);
+        });
+    });
+    describe('Delete Diary', () => {
+        describe('Exists', () => {
+            it('No Comment', async () => {
+                const DiaryID = await Diary.CreateDiary('4010404006753', {
+                    title: 'Test Diary',
+                    scope_of_disclosure: 0,
+                    allow_comment: true,
+                    content: 'Test Content',
+                });
+                const Result = await Diary.DeleteDiary(DiaryID);
+                expect(Result).toBeTruthy();
+                expect(await Diary.GetDiary(DiaryID)).toBeNull();
+                expect(existsSync(`./diaries/${DiaryID}.txt`)).toBeFalsy();
+                expect(existsSync(`./diaries/archived/${DiaryID}.zip`)).toBeTruthy();
+            });
+            it('Contain Comment', async () => {
+                const MainContent = await Diary.CreateDiary('4010404006753', {
+                    title: 'Test Diary',
+                    scope_of_disclosure: 0,
+                    allow_comment: true,
+                    content: 'Test Content',
+                });
+                const CommentContent = await Diary.CreateDiary('4010404006753', {
+                    title: 'Test Comment',
+                    scope_of_disclosure: 0,
+                    allow_comment: true,
+                    content: 'Test Comment',
+                    comment_target: MainContent,
+                });
+                const Result = await Diary.DeleteDiary(MainContent);
+                expect(Result).toBeTruthy();
+                expect(await Diary.GetDiary(MainContent)).toBeNull();
+                expect(await Diary.GetDiary(CommentContent)).toBeNull();
+                expect(existsSync(`./diaries/${MainContent}.txt`)).toBeFalsy();
+                expect(existsSync(`./diaries/${CommentContent}.txt`)).toBeFalsy();
+                expect(existsSync(`./diaries/archived/${MainContent}.zip`)).toBeTruthy();
+                expect(existsSync(`./diaries/archived/${CommentContent}.zip`)).toBeFalsy();
+            });
+        });
+        it('Not Exists', async () => {
+            const Result = await Diary.DeleteDiary('did-notfound');
+            expect(Result).toBeFalsy();
+            expect(existsSync('./diaries/archived/did-notfound.zip')).toBeFalsy();
         });
     });
 });
