@@ -1,7 +1,7 @@
 import { writeFile, readFile, writeJson } from 'nodeeasyfileio';
 import DatabaseConnector from '../DatabaseConnector';
 import { v4 as uuidv4 } from 'uuid';
-import { createWriteStream, renameSync, unlinkSync } from 'node:fs';
+import { createWriteStream, renameSync, rmSync } from 'node:fs';
 import * as archiver from 'archiver';
 
 export type DiaryBaseData = {
@@ -180,7 +180,7 @@ export default class DiaryManager extends DatabaseConnector {
         archive.glob(`./diaries/archived/${DiaryID}/**/*`);
         archive.finalize();
         output.on('close', () => {
-            unlinkSync(`./diaries/archived/${DiaryID}`);
+            rmSync(`./diaries/archived/${DiaryID}`, { recursive: true });
         });
         output.end();
         return true;
