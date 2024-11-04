@@ -53,7 +53,7 @@ CREATE TABLE `diary` (
     `WriterID` VARCHAR(13) NOT NULL,
     `Title` TEXT NOT NULL,
     `UploadDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `LastUpdateDate` DATETIME NULL,
+    `LastUpdateDate` DATETIME NOT NULL,
     `ScopeOfDisclosure` TINYINT UNSIGNED NOT NULL,
     `AllowComment` BOOLEAN NOT NULL,
     `Comment` VARCHAR(36) NULL,
