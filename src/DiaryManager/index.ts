@@ -51,6 +51,7 @@ export default class DiaryManager extends DatabaseConnector {
     public async CreateDiary(SystemID: string, arg: CreateDiaryArg): Promise<string> {
         const DiaryID = CreateDiaryID();
         if (await this.mysql.count({ where: { ID: DiaryID } }).then(count => count > 0))
+            /* v8 ignore next */
             return this.CreateDiary(SystemID, arg);
         await this.mysql.create({
             data: {
