@@ -39,19 +39,24 @@ describe('Diary Manager All Test', () => {
         const DiaryID = {
             NoComment: '',
             ContainComment: '',
+            CommentID: '',
         }
         beforeAll(async () => {
-            DiaryID.NoComment = await Diary.CreateDiary('4010404006753', {
+            await Diary.CreateDiary('4010404006753', {
                 title: 'Test Diary',
                 scope_of_disclosure: 0,
                 allow_comment: true,
                 content: 'Test Content',
+            }).then(ID => {
+                DiaryID.NoComment = ID;
             });
-            DiaryID.ContainComment = await Diary.CreateDiary('4010404006753', {
+            await Diary.CreateDiary('4010404006753', {
                 title: 'Test Diary',
                 scope_of_disclosure: 0,
                 allow_comment: true,
                 content: 'Test Content',
+            }).then(ID => {
+                DiaryID.ContainComment = ID;
             });
             await Diary.CreateDiary('4010404006753', {
                 title: 'Test Comment',
@@ -59,11 +64,14 @@ describe('Diary Manager All Test', () => {
                 allow_comment: true,
                 content: 'Test Comment',
                 comment_target: DiaryID.ContainComment,
+            }).then(ID => {
+                DiaryID.CommentID = ID;
             });
         });
         it('No Comment', async () => {
             const Result = await Diary.GetDiary(DiaryID.NoComment);
             expect(Result).toStrictEqual({
+                id: DiaryID.NoComment,
                 title: 'Test Diary',
                 scope_of_disclosure: 0,
                 allow_comment: true,
@@ -77,6 +85,7 @@ describe('Diary Manager All Test', () => {
         it('Comment Exist', async () => {
             const Result = await Diary.GetDiary(DiaryID.ContainComment);
             expect(Result).toStrictEqual({
+                id: DiaryID.ContainComment,
                 title: 'Test Diary',
                 scope_of_disclosure: 0,
                 allow_comment: true,
@@ -86,6 +95,7 @@ describe('Diary Manager All Test', () => {
                 upload_date: expect.any(Date),
                 comments: [
                     {
+                        id: DiaryID.CommentID,
                         title: 'Test Comment',
                         scope_of_disclosure: 0,
                         allow_comment: true,

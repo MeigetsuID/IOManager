@@ -16,6 +16,7 @@ export type CreateDiaryArg = DiaryBaseData & {
 };
 
 export type DiaryInformation = DiaryBaseData & {
+    id: string;
     writer_name: string;
     writer_id: string;
     upload_date: Date;
@@ -88,6 +89,7 @@ export default class DiaryManager extends DatabaseConnector {
             })
             .then(comments => comments.map(comment => comment.ID));
         const Ret = {
+            id: DiaryID,
             title: DiaryInformation.Title,
             content: Content,
             scope_of_disclosure: DiaryInformation.ScopeOfDisclosure,
