@@ -82,6 +82,7 @@ describe('Diary Manager All Test', () => {
                 writer_name: '明月',
                 writer_id: 'meigetsu2020',
                 upload_date: expect.any(Date),
+                last_update_date: expect.any(Date),
                 comments: [],
             });
         });
@@ -96,6 +97,7 @@ describe('Diary Manager All Test', () => {
                 writer_name: '明月',
                 writer_id: 'meigetsu2020',
                 upload_date: expect.any(Date),
+                last_update_date: expect.any(Date),
                 comments: [
                     {
                         id: DiaryID.CommentID,
@@ -106,6 +108,7 @@ describe('Diary Manager All Test', () => {
                         writer_name: '明月',
                         writer_id: 'meigetsu2020',
                         upload_date: expect.any(Date),
+                        last_update_date: expect.any(Date),
                         comments: [],
                     },
                 ],
