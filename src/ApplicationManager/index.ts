@@ -161,9 +161,11 @@ export default class ApplicationManager extends DatabaseConnector {
     }
     public async UpdateApp(
         AppID: string,
+        DeveloperID: string,
         arg: UpdateApplicationInformation
     ): Promise<{ client_id: string; client_secret?: string } | null> {
-        if (await this.IsAppIDFree(AppID)) return null;
+        const AppInfo = await this.mysql.findUnique({ where: { AppID: AppID } });
+        if (!AppInfo || AppInfo.DeveloperID !== DeveloperID) return null;
         const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
         if (arg.regenerate_secret && DiskRecord.secret === ApplicationManager.Public)
             throw new Error('This application cannot regenerate client secret.');

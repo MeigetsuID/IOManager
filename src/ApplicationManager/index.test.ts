@@ -221,7 +221,7 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         };
-        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, DeveloperID, {
             regenerate_secret: false,
             name: 'Test Application 2',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -242,7 +242,7 @@ describe('Application Manager All Test', () => {
         };
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
-        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, DeveloperID, {
             regenerate_secret: true,
             name: 'Test Application 2',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -276,7 +276,7 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         };
-        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, {
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, DeveloperID, {
             regenerate_secret: false,
             name: 'Test Application 2',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -298,7 +298,7 @@ describe('Application Manager All Test', () => {
         const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
         if (!AppIDAndSecret) throw new Error('Developer is not found.');
         await expect(
-            Application.UpdateApp(AppIDAndSecret.client_id, {
+            Application.UpdateApp(AppIDAndSecret.client_id, DeveloperID, {
                 regenerate_secret: true,
                 name: 'Test Application 2',
                 redirect_uri: ['https://example.com', 'https://example.com/test'],
@@ -307,7 +307,26 @@ describe('Application Manager All Test', () => {
     });
 
     test('Update Applications/Not Found', async () => {
-        const UpdateRes = await Application.UpdateApp(`app-${uuidv4()}`, {
+        const UpdateRes = await Application.UpdateApp(`app-${uuidv4()}`, DeveloperID, {
+            regenerate_secret: false,
+            name: 'Test Application 2',
+            redirect_uri: ['https://example.com', 'https://example.com/test'],
+        });
+        expect(UpdateRes).toBe(null);
+    });
+
+    test('Update Applications/Not Developer', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: true,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
+        const UpdateRes = await Application.UpdateApp(AppIDAndSecret.client_id, '4010404006754', {
             regenerate_secret: false,
             name: 'Test Application 2',
             redirect_uri: ['https://example.com', 'https://example.com/test'],
