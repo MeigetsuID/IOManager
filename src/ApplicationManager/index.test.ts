@@ -193,7 +193,7 @@ describe('Application Manager All Test', () => {
             if (!a.client_id || !b.client_id) throw new Error('client_id is not found.');
             return a.client_id.localeCompare(b.client_id);
         });
-        expect(ApplicationInfos).toStrictEqual(Expect);
+        expect(ApplicationInfos.sort()).toStrictEqual(Expect.sort());
     });
 
     test('Get Applications/Not Found', async () => {
