@@ -355,14 +355,29 @@ describe('Application Manager All Test', () => {
             terms_of_service: 'https://example.com/terms_of_service',
             developer: '明月',
         });
-        const DeleteRes = await Application.DeleteApp(AppIDAndSecret.client_id);
+        const DeleteRes = await Application.DeleteApp(AppIDAndSecret.client_id, DeveloperID);
         expect(DeleteRes).toBe(true);
         const GetResultAfterDelete = await Application.GetApp(AppIDAndSecret.client_id);
         expect(GetResultAfterDelete).toBe(null);
     });
 
     test('Delete Application/Not Found', async () => {
-        const DeleteRes = await Application.DeleteApp(`app-${uuidv4()}`);
+        const DeleteRes = await Application.DeleteApp(`app-${uuidv4()}`, DeveloperID);
+        expect(DeleteRes).toBe(false);
+    });
+
+    test('Delete Application/Not Developer', async () => {
+        const AppBaseInfo = {
+            name: 'Test Application',
+            description: 'This is a test application.',
+            redirect_uri: ['https://example.com'],
+            privacy_policy: 'https://example.com/privacy_policy',
+            terms_of_service: 'https://example.com/terms_of_service',
+            public: true,
+        };
+        const AppIDAndSecret = await Application.CreateApp(DeveloperID, AppBaseInfo);
+        if (!AppIDAndSecret) throw new Error('Developer is not found.');
+        const DeleteRes = await Application.DeleteApp(`app-${uuidv4()}`, '4010404006754');
         expect(DeleteRes).toBe(false);
     });
 
