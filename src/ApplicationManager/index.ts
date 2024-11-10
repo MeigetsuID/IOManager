@@ -194,7 +194,7 @@ export default class ApplicationManager extends DatabaseConnector {
                   client_id: AppID,
               };
     }
-    public async DeleteApp(AppID: string, DeveloperID): Promise<boolean> {
+    public async DeleteApp(AppID: string, DeveloperID: string): Promise<boolean> {
         const AppInfo = await this.mysql.findUnique({ where: { AppID: AppID } });
         if (!AppInfo || AppInfo.DeveloperID !== DeveloperID) return false;
         await this.mysql.delete({
