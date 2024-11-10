@@ -141,8 +141,9 @@ export default class DiaryManager extends DatabaseConnector {
                 return Promise.all(CreateDiaryRecordPromises);
             });
     }
-    public async UpdateDiary(DiaryID: string, arg: Partial<DiaryBaseData>): Promise<boolean> {
-        if (await this.mysql.count({ where: { ID: DiaryID } }).then(count => count === 0)) return false;
+    public async UpdateDiary(WriterID: string, DiaryID: string, arg: Partial<DiaryBaseData>): Promise<boolean> {
+        if (await this.mysql.count({ where: { ID: DiaryID, WriterID: WriterID } }).then(count => count === 0))
+            return false;
         await this.mysql.update({
             data: {
                 Title: arg.title,
@@ -156,13 +157,17 @@ export default class DiaryManager extends DatabaseConnector {
         if (arg.content) writeFile(`./system/diaries/${DiaryID}.txt`, arg.content, true);
         return true;
     }
-    public async DeleteDiary(DiaryID: string): Promise<boolean> {
+    public async DeleteDiary(WriterID: string, DiaryID: string): Promise<boolean> {
         const Targets = await this.mysql.findMany({
             where: {
                 OR: [{ ID: DiaryID }, { Comment: DiaryID }],
             },
         });
         if (Targets.length === 0) return false;
+        const TargetContent = Targets.find(target => target.ID === DiaryID);
+        /* v8 ignore next */
+        if (!TargetContent) throw new Error('TargetContent is undefined');
+        if (TargetContent.WriterID !== WriterID) return false;
         await this.mysql.deleteMany({
             where: {
                 OR: [{ ID: DiaryID }, { Comment: DiaryID }],
@@ -194,6 +199,6 @@ export default class DiaryManager extends DatabaseConnector {
                 },
             })
             .then(diaries => diaries.map(diary => diary.ID));
-        await Promise.all(DiaryIDs.map(diaryID => this.DeleteDiary(diaryID)));
+        await Promise.all(DiaryIDs.map(diaryID => this.DeleteDiary(WriterID, diaryID)));
     }
 }
