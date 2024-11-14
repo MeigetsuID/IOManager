@@ -44,11 +44,12 @@ export default class ManagerBase {
             where: { AccessToken: ToHash(TokenText, 'hotel') },
         });
         if (!TokenData || TokenData.AExpiresAt.getTime() < Date.now()) return null;
+        const ID = ReturnSystemID ? TokenData.VirutalIDTable.ID : TokenData.VirtualID;
         if (RequireScopes.length > 0) {
-            if (TokenData.Scopes === this.SupervisorScopeName) return TokenData.VirtualID;
+            if (TokenData.Scopes === this.SupervisorScopeName) return ID;
             const Scopes = TokenData.Scopes.split(',');
-            return RequireScopes.every(scope => Scopes.includes(scope)) ? TokenData.VirtualID : null;
+            return RequireScopes.every(scope => Scopes.includes(scope)) ? ID : null;
         }
-        return ReturnSystemID ? TokenData.VirutalIDTable.ID : TokenData.VirtualID;
+        return ID;
     }
 }
