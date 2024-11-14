@@ -22,8 +22,8 @@ export type TokenExpiresMinInformation = {
 };
 
 export default class TokenManager extends DatabaseConnector {
-    constructor(private SupervisorScopeName: string) {
-        super();
+    constructor(SupervisorScopeName: string) {
+        super(SupervisorScopeName);
     }
     /* v8 ignore next 3 */
     [Symbol.asyncDispose]() {
@@ -93,26 +93,7 @@ export default class TokenManager extends DatabaseConnector {
             });
     }
     public async Check(TokenText: string, RequireScopes: string[]): Promise<string | null> {
-        const TokenData = await this.mysql.findUnique({
-            select: {
-                VirtualID: true,
-                Scopes: true,
-                AExpiresAt: true,
-                VirutalIDTable: {
-                    select: {
-                        ID: true,
-                    },
-                },
-            },
-            where: { AccessToken: ToHash(TokenText, 'hotel') },
-        });
-        if (!TokenData || TokenData.AExpiresAt.getTime() < Date.now()) return null;
-        if (RequireScopes.length > 0) {
-            if (TokenData.Scopes === this.SupervisorScopeName) return TokenData.VirtualID;
-            const Scopes = TokenData.Scopes.split(',');
-            return RequireScopes.every(scope => Scopes.includes(scope)) ? TokenData.VirtualID : null;
-        }
-        return TokenData.VirtualID;
+        return this.CheckAccessToken(TokenText, RequireScopes);
     }
     public async Refresh(
         RefreshToken: string,
