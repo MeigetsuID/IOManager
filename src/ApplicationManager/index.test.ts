@@ -32,7 +32,7 @@ describe('Application Manager Sub Module Test', () => {
 
 describe('Application Manager All Test', () => {
     const DeveloperID = '4010404006753';
-    const Application = new ApplicationManager();
+    const Application = new ApplicationManager('supervisor');
     test('Create Application/Confidential', async () => {
         const ApplicationInfo = await Application.CreateApp(DeveloperID, {
             name: 'Test Application',

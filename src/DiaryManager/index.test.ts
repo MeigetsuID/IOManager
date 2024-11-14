@@ -10,8 +10,8 @@ describe('Diary Manager Sub Module Test', () => {
 });
 
 describe('Diary Manager All Test', () => {
-    const Diary = new DiaryManager();
-    const Account = new AccountManager();
+    const Diary = new DiaryManager('supervisor');
+    const Account = new AccountManager('supervisor');
     describe('Create Diary', () => {
         it('Main Content', async () => {
             const Result = await Diary.CreateDiary('4010404006753', {

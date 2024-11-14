@@ -1,7 +1,7 @@
 import AccountManager from '.';
 
 describe('Account Manager All Test', () => {
-    const Account = new AccountManager();
+    const Account = new AccountManager('supervisor');
     test('Get Account/System ID/Found', async () => {
         const AccountInfo = await Account.SGetAccount('4010404006753');
         const Expect = {

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import DatabaseConnector from '../DatabaseConnector';
+import ManagerBase from '../ManagerBase';
 import MailAddressEncryption from '../MailAddressEncryption';
 
 export type VirtualIDLinkedInformation = {
@@ -15,10 +15,10 @@ export function CreateVirtualIDText(): string {
     return `vid-${uuidv4().replace(/-/g, '')}`;
 }
 
-export default class VirtualIDManager extends DatabaseConnector {
+export default class VirtualIDManager extends ManagerBase {
     private MailEnc: MailAddressEncryption;
-    constructor() {
-        super();
+    constructor(SupervisorScopeName: string) {
+        super(SupervisorScopeName);
         this.MailEnc = new MailAddressEncryption();
     }
     /* v8 ignore next 3 */

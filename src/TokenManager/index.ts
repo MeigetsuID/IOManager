@@ -1,4 +1,4 @@
-import DatabaseConnector from '../DatabaseConnector';
+import ManagerBase from '../ManagerBase';
 import { generate } from 'randomstring';
 import { ToHash } from '@meigetsusoft/hash';
 
@@ -21,7 +21,7 @@ export type TokenExpiresMinInformation = {
     refresh_token: number;
 };
 
-export default class TokenManager extends DatabaseConnector {
+export default class TokenManager extends ManagerBase {
     constructor(SupervisorScopeName: string) {
         super(SupervisorScopeName);
     }

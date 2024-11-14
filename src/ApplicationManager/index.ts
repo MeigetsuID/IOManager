@@ -1,4 +1,4 @@
-import DatabaseConnector from '../DatabaseConnector';
+import ManagerBase from '../ManagerBase';
 import { v4 as uuidv4 } from 'uuid';
 import { generate } from 'randomstring';
 import { ToHash } from '@meigetsusoft/hash';
@@ -59,11 +59,11 @@ export function CreateApplicationInformationResponse(
     };
 }
 
-export default class ApplicationManager extends DatabaseConnector {
+export default class ApplicationManager extends ManagerBase {
     private static readonly Public =
         'EAD6C0F0123381BE2204A8F8778060C7D0CEC9A3F23C72D2532A75A57742B8A8FCBA3FB725F04DAB5AF4CD4823A44DC098167F50941C8CCDFA13131D23642A09';
-    constructor() {
-        super();
+    constructor(SupervisorScopeName: string) {
+        super(SupervisorScopeName);
     }
     /* v8 ignore next 3 */
     [Symbol.asyncDispose]() {

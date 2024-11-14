@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs';
-import DatabaseConnector from '../DatabaseConnector';
+import ManagerBase from '../ManagerBase';
 import MailAddressEncryption from '../MailAddressEncryption';
 import { ToHash } from '@meigetsusoft/hash';
 
@@ -37,10 +37,10 @@ export type CheckAvailableArg = Partial<{
     mailaddress: string;
 }>;
 
-export default class AccountManager extends DatabaseConnector {
+export default class AccountManager extends ManagerBase {
     private MailEnc: MailAddressEncryption;
-    constructor() {
-        super();
+    constructor(SupervisorScopeName: string) {
+        super(SupervisorScopeName);
         /* v8 ignore next */
         if (!existsSync('./system/account')) mkdirSync('./system/account', { recursive: true });
         this.MailEnc = new MailAddressEncryption();

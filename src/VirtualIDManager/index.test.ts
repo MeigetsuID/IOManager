@@ -13,8 +13,8 @@ describe('Virtual ID Manager Sub Module Test', () => {
 });
 
 describe('Virtual ID Manager Test', () => {
-    const VirtualID = new VirtualIDManager();
-    const AppMgr = new ApplicationManager();
+    const VirtualID = new VirtualIDManager('supervisor');
+    const AppMgr = new ApplicationManager('supervisor');
     let AppID = '';
     beforeAll(async () => {
         await AppMgr.CreateApp(SystemID, {
@@ -87,7 +87,7 @@ describe('Virtual ID Manager Test', () => {
     });
 
     test('Get All Virtual ID/From App ID', async () => {
-        const AccountMgr = new AccountManager();
+        const AccountMgr = new AccountManager('supervisor');
         const AppInfo = await AppMgr.CreateApp(SystemID, {
             name: 'TestApp',
             description: 'Test Application',

@@ -15,8 +15,8 @@ describe('Access Token Manager Sub Module Test', () => {
 
 describe('Token Manager Test', () => {
     const Token = new TokenManager('supervisor');
-    const VirtualID = new VirtualIDManager();
-    const AppMgr = new ApplicationManager();
+    const VirtualID = new VirtualIDManager('supervisor');
+    const AppMgr = new ApplicationManager('supervisor');
     let AppID = '';
     beforeAll(async () => {
         await AppMgr.CreateApp(SystemID, {
@@ -193,7 +193,7 @@ describe('Token Manager Test', () => {
         });
 
         test('Multiple Virtual ID', async () => {
-            const Account = new AccountManager();
+            const Account = new AccountManager('supervisor');
             const App = await AppMgr.CreateApp(SystemID, {
                 name: 'TestApp',
                 description: 'Test Application',
@@ -254,7 +254,7 @@ describe('Token Manager Test', () => {
     });
 
     describe('Revoke For Delete', () => {
-        const AccountMgr = new AccountManager();
+        const AccountMgr = new AccountManager('supervisor');
         const CacheInfo = {
             SystemID: '',
             AppID: '',

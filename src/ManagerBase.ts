@@ -1,7 +1,7 @@
 import { ToHash } from '@meigetsusoft/hash';
 import { PrismaClient } from '@prisma/client';
 
-export default class DatabaseConnector {
+export default class ManagerBase {
     private static instance: PrismaClient;
     private static connection: number = 0;
     /**
@@ -9,13 +9,13 @@ export default class DatabaseConnector {
      * Initializes a new instance of the Database class and increments the connection count.
      */
     constructor(private SupervisorScopeName: string) {
-        if (DatabaseConnector.connection === 0) DatabaseConnector.instance = new PrismaClient();
-        DatabaseConnector.connection++;
+        if (ManagerBase.connection === 0) ManagerBase.instance = new PrismaClient();
+        ManagerBase.connection++;
     }
     /* v8 ignore next 5 */
     [Symbol.asyncDispose]() {
-        DatabaseConnector.connection--;
-        if (DatabaseConnector.connection === 0) return DatabaseConnector.instance.$disconnect();
+        ManagerBase.connection--;
+        if (ManagerBase.connection === 0) return ManagerBase.instance.$disconnect();
         return Promise.resolve();
     }
     /**
@@ -23,7 +23,7 @@ export default class DatabaseConnector {
      * @returns The PrismaClient instance.
      */
     protected get DB(): PrismaClient {
-        return DatabaseConnector.instance;
+        return ManagerBase.instance;
     }
     protected async CheckAccessToken(TokenText: string, RequireScopes: string[], ReturnSystemID: boolean = false): Promise<string | null> {
         const TokenData = await this.DB.token.findUnique({

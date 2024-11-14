@@ -1,5 +1,5 @@
 import { writeFile, readFile, writeJson } from 'nodeeasyfileio';
-import DatabaseConnector from '../DatabaseConnector';
+import ManagerBase from '../ManagerBase';
 import { v4 as uuidv4 } from 'uuid';
 import { createWriteStream, renameSync, rmSync } from 'node:fs';
 import * as archiver from 'archiver';
@@ -37,9 +37,9 @@ export function CreateDiaryID() {
     return `did-${uuidv4().replace(/-/g, '')}`;
 }
 
-export default class DiaryManager extends DatabaseConnector {
-    constructor() {
-        super();
+export default class DiaryManager extends ManagerBase {
+    constructor(SuperVisorScopeName: string) {
+        super(SuperVisorScopeName);
     }
     /* v8 ignore next 3 */
     [Symbol.asyncDispose]() {
