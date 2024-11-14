@@ -5,9 +5,9 @@ import VirtualIDManager from './VirtualIDManager';
 import TokenManager, { TokenResponse } from './TokenManager';
 
 describe('Cascade Test', () => {
-    const Account = new AccountManager();
-    const Application = new ApplicationManager();
-    const VirtualID = new VirtualIDManager();
+    const Account = new AccountManager('supervisor');
+    const Application = new ApplicationManager('supervisor');
+    const VirtualID = new VirtualIDManager('supervisor');
     const Token = new TokenManager('supervisor');
     const prisma = new PrismaClient();
     afterAll(async () => {
