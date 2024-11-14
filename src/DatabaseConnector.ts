@@ -25,7 +25,7 @@ export default class DatabaseConnector {
     protected get DB(): PrismaClient {
         return DatabaseConnector.instance;
     }
-    protected async CheckAccessToken(TokenText: string, RequireScopes: string[]) {
+    protected async CheckAccessToken(TokenText: string, RequireScopes: string[], ReturnSystemID: boolean = false): Promise<string | null> {
         const TokenData = await this.DB.token.findUnique({
             select: {
                 VirtualID: true,
@@ -45,6 +45,6 @@ export default class DatabaseConnector {
             const Scopes = TokenData.Scopes.split(',');
             return RequireScopes.every(scope => Scopes.includes(scope)) ? TokenData.VirtualID : null;
         }
-        return TokenData.VirtualID;
+        return ReturnSystemID ? TokenData.VirutalIDTable.ID : TokenData.VirtualID;
     }
 }
