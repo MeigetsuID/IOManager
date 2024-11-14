@@ -66,7 +66,7 @@ describe('Application Manager All Test', () => {
                 public: false,
             });
             expect(ApplicationInfo).toBeNull();
-        });    
+        });
     });
     describe('Get Application', () => {
         test('OK', async () => {
@@ -92,12 +92,11 @@ describe('Application Manager All Test', () => {
             const ApplicationInfo = await Application.GetApp(AppIDAndSecret.client_id);
             expect(ApplicationInfo).toStrictEqual(Expect);
         });
-    
+
         test('Not Found', async () => {
             const ApplicationInfo = await Application.GetApp(`app-${uuidv4()}`);
             expect(ApplicationInfo).toBe(null);
         });
-    
     });
     describe('Get Applications', () => {
         test('Exists', async () => {
@@ -197,7 +196,7 @@ describe('Application Manager All Test', () => {
             });
             expect(ApplicationInfos.sort()).toStrictEqual(Expect.sort());
         });
-    
+
         test('Not Found', async () => {
             const ApplicationInfos = await Application.GetApps('4010404006744');
             expect(ApplicationInfos).toStrictEqual([]);
@@ -289,7 +288,7 @@ describe('Application Manager All Test', () => {
                 expect(UpdateRes).toStrictEqual({ client_id: AppIDAndSecret.client_id });
                 expect(ApplicationInfo).toStrictEqual(Expect);
             });
-        
+
             test('Regenerate Secret', async () => {
                 const AppBaseInfo = {
                     name: 'Test Application',
@@ -510,7 +509,7 @@ describe('Application Manager All Test', () => {
                 account_type: 0,
             });
         });
-    
+
         test('Public/OK', async () => {
             const AppBaseInfo = {
                 name: 'Test Application',
@@ -528,12 +527,12 @@ describe('Application Manager All Test', () => {
                 account_type: 0,
             });
         });
-    
+
         test('Not Found', async () => {
             const AuthRes = await Application.AuthApp(`app-${uuidv4()}`, 'test', 'https://example.com');
             expect(AuthRes).toBe(null);
         });
-    
+
         test('App Secret Error', async () => {
             const AppBaseInfo = {
                 name: 'Test Application',
@@ -548,7 +547,7 @@ describe('Application Manager All Test', () => {
             const AuthRes = await Application.AuthApp(AppIDAndSecret.client_id, 'test', AppBaseInfo.redirect_uri[0]);
             expect(AuthRes).toBe(null);
         });
-    
+
         test('Redirect URI Error', async () => {
             const AppBaseInfo = {
                 name: 'Test Application',

@@ -25,7 +25,11 @@ export default class ManagerBase {
     protected get DB(): PrismaClient {
         return ManagerBase.instance;
     }
-    protected async CheckAccessToken(TokenText: string, RequireScopes: string[], ReturnSystemID: boolean = false): Promise<string | null> {
+    protected async CheckAccessToken(
+        TokenText: string,
+        RequireScopes: string[],
+        ReturnSystemID: boolean = false
+    ): Promise<string | null> {
         const TokenData = await this.DB.token.findUnique({
             select: {
                 VirtualID: true,
