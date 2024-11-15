@@ -25,7 +25,7 @@ export default class ManagerBase {
     protected get DB(): PrismaClient {
         return ManagerBase.instance;
     }
-    protected async CheckAccessToken(
+    public async CheckAccessToken(
         TokenText: string,
         RequireScopes: string[],
         ReturnSystemID: boolean = false
