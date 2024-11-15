@@ -77,6 +77,20 @@ describe('Token Manager Test', () => {
             expect(Check).toBe(VID);
         });
 
+        test('Get System ID Check', async () => {
+            const VID = await VirtualID.GetVirtualID(AppID, SystemID);
+            if (!VID) throw new Error('Invalid AppID or SystemID.');
+            const TokenInfo = await Token.CreateToken(VID, [
+                'user.read',
+                'user.write',
+                'application.read',
+                'application.write',
+            ]);
+            if (!TokenInfo) throw new Error('Invalid Virtual ID.');
+            const Check = await Token.Check(TokenInfo.access_token, ['user.read', 'user.write'], true);
+            expect(Check).toBe(SystemID);
+        });
+
         test('Scope NG', async () => {
             const VID = await VirtualID.GetVirtualID(AppID, SystemID);
             if (!VID) throw new Error('Invalid AppID or SystemID.');
