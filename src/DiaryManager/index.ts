@@ -1,4 +1,4 @@
-import { writeFile, readFile, writeJson } from 'nodeeasyfileio';
+import { writeFile, readFile, writeJson, OverwriteMode } from 'nodeeasyfileio';
 import ManagerBase from '../ManagerBase';
 import { v4 as uuidv4 } from 'uuid';
 import { createWriteStream, renameSync, rmSync } from 'node:fs';
@@ -154,7 +154,7 @@ export default class DiaryManager extends ManagerBase {
                 ID: DiaryID,
             },
         });
-        if (arg.content) writeFile(`./system/diaries/${DiaryID}.txt`, arg.content, true);
+        if (arg.content) writeFile(`./system/diaries/${DiaryID}.txt`, arg.content, OverwriteMode.Replace);
         return true;
     }
     public async DeleteDiary(WriterID: string, DiaryID: string): Promise<boolean> {

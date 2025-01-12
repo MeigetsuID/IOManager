@@ -2,7 +2,7 @@ import ManagerBase from '../ManagerBase';
 import { v4 as uuidv4 } from 'uuid';
 import { generate } from 'randomstring';
 import { ToHash } from '@meigetsusoft/hash';
-import { readJson, writeJson } from 'nodeeasyfileio';
+import { OverwriteMode, readJson, writeJson } from 'nodeeasyfileio';
 import { unlinkSync } from 'fs';
 
 export type ApplicationInformation = {
@@ -184,7 +184,7 @@ export default class ApplicationManager extends ManagerBase {
         Object.keys(DiskRecord).forEach(key => {
             if (arg[key]) DiskRecord[key] = arg[key];
         });
-        writeJson(`./system/application/data/${AppID}.dat`, DiskRecord, true);
+        writeJson(`./system/application/data/${AppID}.dat`, DiskRecord, OverwriteMode.Replace);
         return AppSecret
             ? {
                   client_id: AppID,
