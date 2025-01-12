@@ -20,7 +20,7 @@
     "ci": "run-p eslint test",
     "test": "jest",
     "prepack": "run-s build:release",
-    "postinstall": "prisma generate",
+    "postinstall": "run-p build:release generate",
     "generate": "prisma generate",
     "start:container": "docker compose up -d",
     "wait": "node ./DBWait.js",
