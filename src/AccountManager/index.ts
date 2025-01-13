@@ -220,4 +220,29 @@ export default class AccountManager extends ManagerBase {
         }
         return total === 0;
     }
+    public async SyncWTA(
+        WTARequestMethod: (id: string, record: Partial<{ name: string; mailaddress: string }>) => Promise<void>
+    ) {
+        const Now = new Date();
+        const UpdateTarget = await this.mysql.findMany({
+            select: {
+                UserName: true,
+                MailAddress: true,
+            },
+            where: {
+                UpdatedAt: {
+                    lt: new Date(Now.getFullYear(), Now.getMonth(), Now.getDate(), 0, 0, 0),
+                    gte: new Date(Now.getFullYear(), Now.getMonth(), Now.getDate() - 1, 0, 0, 0),
+                },
+            },
+        });
+        if (UpdateTarget.length === 0) return;
+        const UpdatePromises = UpdateTarget.map(i =>
+            WTARequestMethod(i.UserName, {
+                name: i.UserName,
+                mailaddress: this.MailEnc.decrypt(i.MailAddress),
+            })
+        );
+        await Promise.all(UpdatePromises);
+    }
 }

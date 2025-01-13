@@ -21,6 +21,7 @@ model masteruserrecord {
     Password String @db.VarChar(128)
     AccountType Int @db.UnsignedTinyInt
     CreatedAt DateTime @default(now())
+    UpdatedAt DateTime @updatedAt
     Applications application[]
     VirtualIDs virtualid[]
     Diaries diary[]
