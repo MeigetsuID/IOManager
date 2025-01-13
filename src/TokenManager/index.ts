@@ -92,7 +92,11 @@ export default class TokenManager extends ManagerBase {
                 };
             });
     }
-    public async Check(TokenText: string, RequireScopes: string[], ReturnSystemID: boolean = false): Promise<string | null> {
+    public async Check(
+        TokenText: string,
+        RequireScopes: string[],
+        ReturnSystemID: boolean = false
+    ): Promise<string | null> {
         return this.CheckAccessToken(TokenText, RequireScopes, ReturnSystemID);
     }
     public async Refresh(
