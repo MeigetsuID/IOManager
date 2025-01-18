@@ -17,6 +17,7 @@ const config: Config = {
     },
     transformIgnorePatterns: ['node_modules/'],
     testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+    testPathIgnorePatterns: ['node_modules/', 'dist/'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
 
