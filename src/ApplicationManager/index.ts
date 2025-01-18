@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { generate } from 'randomstring';
 import { ToHash } from '@meigetsusoft/hash';
 import { OverwriteMode, readJson, writeJson } from 'nodeeasyfileio';
-import { unlinkSync } from 'fs';
+import { existsSync, unlinkSync } from 'fs';
 
 export type ApplicationInformation = {
     name: string;
@@ -233,9 +233,8 @@ export default class ApplicationManager extends ManagerBase {
     }
     public async AuthApp(
         AppID: string,
-        AppSecret: string,
         RedirectUri: string
-    ): Promise<{ developer: string; account_type: number } | null> {
+    ): Promise<{ developer: string; account_type: number, public_app: boolean } | null> {
         return await this.mysql
             .findUnique({
                 select: {
@@ -253,10 +252,14 @@ export default class ApplicationManager extends ManagerBase {
             .then(record => {
                 if (!record) return null;
                 const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
-                return ToHash(AppSecret, 'echo') === DiskRecord.secret &&
-                    DiskRecord.redirect_uri.some(uri => uri === RedirectUri)
-                    ? { developer: record.DeveloperID, account_type: record.Account.AccountType }
+                return DiskRecord.redirect_uri.some(uri => uri === RedirectUri)
+                    ? { developer: record.DeveloperID, account_type: record.Account.AccountType, public_app: DiskRecord.secret === ApplicationManager.Public }
                     : null;
             });
+    }
+    public AuthConfidentialApp(AppID: string, AppSecret: string): boolean {
+        if (AppSecret === 'public' || !existsSync(`./system/application/data/${AppID}.dat`)) return false;
+        const DiskRecord = readJson<DiskSaveRecord>(`./system/application/data/${AppID}.dat`);
+        return DiskRecord.secret === ToHash(AppSecret, 'echo');
     }
 }
