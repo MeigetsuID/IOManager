@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@json-spec/core": "^0.1.12",
-    "@meigetsuid/idgenerator": "^2.1.0",
+    "@meigetsuid/idgenerator": "../IDGenerator",
     "@types/archiver": "^6.0.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.1.0",
