@@ -7,6 +7,7 @@ CREATE TABLE `masteruserrecord` (
     `Password` VARCHAR(128) NOT NULL,
     `AccountType` TINYINT UNSIGNED NOT NULL,
     `CreatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `UpdatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `masteruserrecord_ID_key`(`ID`),
     UNIQUE INDEX `masteruserrecord_UserID_key`(`UserID`),
